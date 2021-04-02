@@ -7,7 +7,7 @@
             <h5>Customer:</h5>
             <hr>
             <a href="" class="btn btn-outline-info btn-sm btn-block mb-2">Update Customer</a>
-            <a href="" class="btn btn-outline-danger btn-sm btn-block">Delete Customer</a>
+            <a href="{% url 'create_order' customer.id %}" class="btn btn-outline-info btn-sm btn-block">Place Order</a>
         </div>
     </div>
     <div class="col-md">
