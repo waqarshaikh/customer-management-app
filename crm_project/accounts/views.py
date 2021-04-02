@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from django.forms import inlineformset_factory
 from .models import *
 from .forms import OrderForm
+from .filters import OrderFilter
 
 # Create your views here.
 
@@ -25,14 +26,16 @@ def customer(request, id):
     customer = Customer.objects.get(id=id)
     orders = customer.order_set.all()
     order_count = orders.count()
-    context = {'customer': customer, 'orders': orders, 'order_count': order_count}
+    my_filter = OrderFilter(request.GET, queryset=orders)
+    orders = my_filter.qs
+    context = {'customer': customer, 'orders': orders, 'order_count': order_count, 'my_filter': my_filter}
     return render(request, 'accounts/customer.html', context)
 
 def product(request):
     products = Product.objects.all()
     return render(request, 'accounts/products.html', {'products': products})
 
-def createOrder(request, id):
+def create_order(request, id):
     OrderFormSet = inlineformset_factory(Customer, Order, fields=('product', 'status'), extra=10)
     customer = Customer.objects.get(id=id)
     formset = OrderFormSet(instance=customer, queryset=Order.objects.none())
@@ -48,7 +51,7 @@ def createOrder(request, id):
     context = {'formset': formset}
     return render(request, 'accounts/order_form.html', context)
 
-def updateOrder(request, id):
+def update_order(request, id):
     order = Order.objects.get(id=id)
     form = OrderForm(instance=order)
 
@@ -61,7 +64,7 @@ def updateOrder(request, id):
     context = {'form': form}
     return render(request, 'accounts/order_form.html', context)
 
-def deleteOrder(request, id):
+def delete_order(request, id):
     order = Order.objects.get(id=id)
 
     if request.method == 'POST':
@@ -70,3 +73,11 @@ def deleteOrder(request, id):
         
     context = {'order': order}
     return render(request, 'accounts/delete.html', context)
+
+def register_page(request):
+    context ={}
+    return redirect(request, 'accounts/register.html', context)
+
+def login_page(request):
+    context ={}
+    return redirect(request, 'accounts/login.html', context)
