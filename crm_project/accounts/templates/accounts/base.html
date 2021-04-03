@@ -12,6 +12,13 @@
         integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="{% static '/css/base.css' %}">
 
+    <style>
+        .logout{
+            color: #fff;
+            font-size: 20px;
+            margin-right: 20px;
+        }
+    </style>
 </head>
 
 <body>
@@ -32,6 +39,8 @@
                     </li>
                 </ul>
             </div>
+            <span class="logout">Hello, {{ request.user }}</span>
+            <span class=""><a class="logout btn btn-outline-light" href="{% url 'logout' %}">Logout</a></span>
         </div>
     </nav>
     <hr>
