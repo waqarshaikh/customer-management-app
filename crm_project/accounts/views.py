@@ -19,9 +19,9 @@ from .decorators import unauthenticated_user, allowed_users, admin_only
 def home(request):
     orders = Order.objects.all()
     customers = Customer.objects.all()
-
-    total_orders = orders.count()
     total_customers = customers.count()
+    
+    total_orders = orders.count()
     delivered = orders.filter(status='Delivered').count()
     pending = orders.filter(status='Pending').count()
 
@@ -30,6 +30,7 @@ def home(request):
         'delivered': delivered, 'pending': pending
     }
     return render(request, 'accounts/dashboard.html', context)
+
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
@@ -42,11 +43,13 @@ def customer(request, id):
     context = {'customer': customer, 'orders': orders, 'order_count': order_count, 'my_filter': my_filter}
     return render(request, 'accounts/customer.html', context)
 
+
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
 def product(request):
     products = Product.objects.all()
     return render(request, 'accounts/products.html', {'products': products})
+
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
@@ -66,6 +69,7 @@ def create_order(request, id):
     context = {'formset': formset}
     return render(request, 'accounts/order_form.html', context)
 
+
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
 def update_order(request, id):
@@ -81,6 +85,7 @@ def update_order(request, id):
     context = {'form': form}
     return render(request, 'accounts/order_form.html', context)
 
+
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
 def delete_order(request, id):
@@ -92,6 +97,7 @@ def delete_order(request, id):
         
     context = {'order': order}
     return render(request, 'accounts/delete.html', context)
+
 
 @unauthenticated_user
 def register_page(request):
@@ -105,12 +111,15 @@ def register_page(request):
             group = Group.objects.get(name='customer')
             user.groups.add(group)
 
+            Customer.objects.create(user=user, name=user.username,)
+
             username = form.cleaned_data.get('username')
             messages.success(request, 'Account created for ' + username)
             return redirect('login')
         
     context = {'form': form}
     return render(request, 'accounts/register.html', context)
+
 
 @unauthenticated_user 
 def login_page(request):
@@ -129,10 +138,21 @@ def login_page(request):
     context ={}
     return render(request, 'accounts/login.html', context)
 
+
 def logout_user(request):
     logout(request)
     return redirect('login')
 
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['customer'])
 def user_page(request):
-    context = {}
+    orders = request.user.customer.order_set.all()
+
+    total_orders = orders.count()
+    delivered = orders.filter(status='Delivered').count()
+    pending = orders.filter(status='Pending').count()
+    context = {'orders': orders,  'total_orders': total_orders,
+        'delivered': delivered, 'pending': pending
+    }
     return render(request, 'accounts/user.html', context)
