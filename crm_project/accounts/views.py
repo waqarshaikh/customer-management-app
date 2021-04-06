@@ -66,7 +66,7 @@ def create_order(request, id):
             formset.save()
             return redirect('/') 
 
-    context = {'formset': formset}
+    context = {'form': formset}
     return render(request, 'accounts/order_form.html', context)
 
 

@@ -11,7 +11,7 @@ class Customer(models.Model):
     profile_pic = models.ImageField(null=True, blank=True, default='default-profile-pic.jpg')
 
     def __str__(self):
-        return self.name
+        return str(self.name)
 
 class Tag(models.Model):
     name = models.CharField(max_length=50, null=True)
