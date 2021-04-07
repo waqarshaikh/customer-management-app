@@ -11,13 +11,13 @@
                 <table class="table">
                     <tr>
                         <th>Product</th>
-                        <th>Category</th>
+                        <th>Tags</th>
                         <th>Price</th>
                     </tr>
                     {% for product in products %}
                         <tr>
                             <td>{{ product.name }}</td>
-                            <td>{{ product.category }}</td>
+                            <td>{{ product.tags.name }}</td>
                             <td>{{ product.price }}</td>
                         </tr>
                     {% endfor %}

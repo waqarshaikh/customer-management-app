@@ -3,6 +3,7 @@
 {% block content %}
 
 {% include 'accounts/status.html' %}
+<hr>
 
 <div class="row">
     <div class="col-md">
@@ -10,14 +11,12 @@
             <table class="table table-sm">
                 <tr>
                     <th>Product</th>
-                    <th>Category</th>
                     <th>Date ordered</th>
                     <th>Status</th>
                 </tr>
                 {% for order in orders %}
                 <tr>
                     <td> {{ order.product }}</td>
-                    <td> {{ order.product.category }} </td>
                     <td> {{ order.date_created }} </td>
                     <td> {{ order.status }} </td>
                 </tr>
