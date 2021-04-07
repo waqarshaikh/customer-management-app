@@ -24,10 +24,11 @@ def home(request):
     total_orders = orders.count()
     delivered = orders.filter(status='Delivered').count()
     pending = orders.filter(status='Pending').count()
+    last_five_orders = orders.order_by('-id')[:5]
 
     context = {'orders': orders, 'customers': customers, 
         'total_orders': total_orders, 'total_customers': total_customers,
-        'delivered': delivered, 'pending': pending
+        'delivered': delivered, 'pending': pending, 'last_five_orders': last_five_orders
     }
     return render(request, 'accounts/dashboard.html', context)
 
@@ -129,7 +130,7 @@ def login_page(request):
             login(request, user)
             return redirect('home')
         else:
-            messages.info(request, 'Username or Password is incorrect.')
+            messages.warning(request, 'Username or Password is incorrect.')
 
     context ={}
     return render(request, 'accounts/login.html', context)
