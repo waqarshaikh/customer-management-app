@@ -6,7 +6,6 @@
         <div class="card card-body">
             <h5>Customer:</h5>
             <hr>
-            <a href="" class="btn btn-outline-info btn-sm btn-block mb-2">Update Customer</a>
             <a href="{% url 'create_order' customer.id %}" class="btn btn-outline-info btn-sm btn-block">Place Order</a>
         </div>
     </div>
@@ -44,7 +43,6 @@
             <table class="table table-sm">
                 <tr>
                     <th>Product</th>
-                    <th>Category</th>
                     <th>Date ordered</th>
                     <th>Status</th>
                     <th>Update</th>
@@ -53,7 +51,6 @@
                 {% for order in orders %}
                 <tr>
                     <td> {{ order.product }}</td>
-                    <td> {{ order.product.category }} </td>
                     <td> {{ order.date_created }} </td>
                     <td> {{ order.status }} </td>
                     <td> <a href="{% url 'delete_order' order.id %}" class="btn btn-danger btn-sm">Remove</a> </td>
