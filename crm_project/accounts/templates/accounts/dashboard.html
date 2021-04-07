@@ -11,7 +11,6 @@
         <h5>CUSTOMERS:</h5>
         <hr>
         <div class="card card-body">
-            <a class="btn btn-primary  btn-sm btn-block" href="">Create Customer</a>
             <table class="table table-sm">
                 <tr>
                     <th></th>
@@ -41,7 +40,7 @@
                     <th>Update</th>
                     <th>Remove</th>
                 </tr>
-                {% for order in orders %}
+                {% for order in last_five_orders %}
                     <tr>
                         <td>{{ order.product }}</td>
                         <td>{{ order.date_created }}</td>
