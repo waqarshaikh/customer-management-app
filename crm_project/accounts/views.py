@@ -1,3 +1,4 @@
+from django.conf.urls import url
 from django.shortcuts import redirect, render
 from django.http import HttpResponse
 from django.forms import inlineformset_factory
@@ -8,7 +9,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import Group
 
 from .models import *
-from .forms import OrderForm, CreateUserForm, CustomerForm
+from .forms import OrderForm, CreateUserForm, CustomerForm, ProductForm
 from .filters import OrderFilter
 from .decorators import unauthenticated_user, allowed_users, admin_only
 
@@ -49,6 +50,51 @@ def customer(request, id):
 def product(request):
     products = Product.objects.all()
     return render(request, 'accounts/products.html', {'products': products})
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
+def create_product(request):
+    context = {}
+    form = ProductForm()
+
+    if request.method == 'POST':
+        form = ProductForm(request.POST)
+
+        if form.is_valid():
+            print(request.POST)
+            form.save()
+            return redirect('http://localhost:8000/products/')
+    
+    context['form'] = form
+    return render(request, 'accounts/create_product.html', context)
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
+def update_product(request, id):
+    product = Product.objects.get(id=id)
+    form = ProductForm(instance=product)
+
+    if request.method == 'POST':
+        form = ProductForm(request.POST, instance=product)
+        if form.is_valid():
+            form.save()
+            return redirect('http://localhost:8000/products/') 
+    
+    context = {'form': form}
+    return render(request, 'accounts/create_product.html', context)
+
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
+def delete_product(request, id):
+    product = Product.objects.get(id=id)
+
+    if request.method == 'POST':
+        product.delete()
+        return redirect('http://localhost:8000/products/')
+        
+    context = {'data': product}
+    return render(request, 'accounts/delete.html', context)
 
 
 @login_required(login_url='login')
@@ -95,7 +141,7 @@ def delete_order(request, id):
         order.delete()
         return redirect('/')
         
-    context = {'order': order}
+    context = {'data': order}
     return render(request, 'accounts/delete.html', context)
 
 

@@ -17,17 +17,17 @@ class OrderForm(ModelForm):
         model = Order
         fields = '__all__'
 
-# class ProductForm(ModelForm):
-#     class Meta:
-#         model = Product
-#         fields = '__all__'
+class ProductForm(ModelForm):
+    class Meta:
+        model = Product
+        fields = '__all__'
              
-#     def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         
-#         super(ProductForm, self).__init__(*args, **kwargs)
+        super(ProductForm, self).__init__(*args, **kwargs)
 
-#         self.fields["tags"].widget = CheckboxSelectMultiple()
-#         self.fields["tags"].queryset = Tag.objects.all()
+        self.fields["tags"].widget = CheckboxSelectMultiple()
+        self.fields["tags"].queryset = Tag.objects.all()
 
 class CreateUserForm(UserCreationForm):
     class Meta:
