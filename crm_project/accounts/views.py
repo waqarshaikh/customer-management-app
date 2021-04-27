@@ -12,7 +12,6 @@ from .forms import OrderForm, CreateUserForm, CustomerForm
 from .filters import OrderFilter
 from .decorators import unauthenticated_user, allowed_users, admin_only
 
-# Create your views here.
 
 @login_required(login_url='login')
 @admin_only
