@@ -5,12 +5,20 @@
 <div class="row">
     <div class="col-md-6">
         <div class="card card-body">
-            <p>Are you sure you want to delete {{ order }} ?</p>
-            <form action="{% url 'delete_order' order.id %}" method="POST">
-                {% csrf_token %}
-                <a href="{% url 'home' %}" class="btn btn-sm">Cancel</a>
-                <input class="btn btn-danger btn-sm" type="submit" value="Confirm">
-            </form>
+            <p>Are you sure you want to delete {{ data }} ?</p>
+            {% if data == 'product' %}{% endif %}
+                <form action="{% url 'delete_product' data.id %}" method="POST">
+                    {% csrf_token %}
+                    <a href="{% url 'home' %}" class="btn btn-sm">Cancel</a>
+                    <input class="btn btn-danger btn-sm" type="submit" value="Confirm">
+                </form>
+            {% if data == 'order' %}
+                <form action="{% url 'delete_order' data.id %}" method="POST">
+                    {% csrf_token %}
+                    <a href="{% url 'home' %}" class="btn btn-sm">Cancel</a>
+                    <input class="btn btn-danger btn-sm" type="submit" value="Confirm">
+                </form>
+            {% endif %}
         </div>
     </div>
 </div>

@@ -5,7 +5,10 @@ from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path('', views.home, name='home'),
-    path('products/', views.product, name='products'),
+    path('products/', views.product, name='products'),    
+    path('update_product/<id>', views.update_product, name='update_product'),
+    path('delete_product/<id>', views.delete_product, name='delete_product'),
+    path('create_product/', views.create_product, name='create_product'),
     path('customer/<id>', views.customer, name='customer'),
     path('create_order/<id>', views.create_order, name='create_order'),
     path('update_order/<id>', views.update_order, name='update_order'),
