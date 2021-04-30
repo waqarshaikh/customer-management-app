@@ -9,7 +9,7 @@
             {% if data == 'product' %}{% endif %}
                 <form action="{% url 'delete_product' data.id %}" method="POST">
                     {% csrf_token %}
-                    <a href="{% url 'home' %}" class="btn btn-sm">Cancel</a>
+                    <a href="{% url 'products' %}" class="btn btn-sm">Cancel</a>
                     <input class="btn btn-danger btn-sm" type="submit" value="Confirm">
                 </form>
             {% if data == 'order' %}
