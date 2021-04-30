@@ -6,10 +6,11 @@ from django.contrib.auth import views as auth_views
 urlpatterns = [
     path('', views.home, name='home'),
     path('products/', views.product, name='products'),    
+    path('customer_feedbacks/', views.customer_feedbacks, name='customer_feedbacks'),    
     path('update_product/<id>', views.update_product, name='update_product'),
     path('delete_product/<id>', views.delete_product, name='delete_product'),
     path('create_product/', views.create_product, name='create_product'),
-    path('customer/<id>', views.customer, name='customer'),
+    path('employee/<id>', views.employee, name='employee'),
     path('create_order/<id>', views.create_order, name='create_order'),
     path('update_order/<id>', views.update_order, name='update_order'),
     path('delete_order/<id>', views.delete_order, name='delete_order'),

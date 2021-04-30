@@ -8,20 +8,20 @@
 
 <div class="row">
     <div class="col-md-5">
-        <h5>CUSTOMERS:</h5>
+        <h5>EMPLOYEES:</h5>
         <hr>
         <div class="card card-body">
             <table class="table table-sm">
                 <tr>
                     <th></th>
-                    <th>Customer</th>
+                    <th>Employee</th>
                     <th>Phone</th>
                 </tr>
-                {% for customer in customers %}
+                {% for employee in employees %}
                     <tr>
-                        <td><a class="btn btn-primary btn-sm" href="{% url 'customer' customer.id %}">View</a></td>
-                        <td>{{ customer.name }}</td> 
-                        <td>{{ customer.phone }}</td> 
+                        <td><a class="btn btn-primary btn-sm" href="{% url 'employee' employee.id %}">View</a></td>
+                        <td>{{ employee.name }}</td> 
+                        <td>{{ employee.phone }}</td> 
                     </tr>
                 {% endfor %}
             </table>
