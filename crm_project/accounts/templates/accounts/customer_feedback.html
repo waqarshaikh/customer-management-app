@@ -1,0 +1,33 @@
+{% extends 'accounts/base.html' %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md">
+            <div class="card card-body">
+                <h5>Customer Feedbacks</h5>
+            </div>
+            <div class="card card-body">
+                <table class="table">
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Product</th>
+                        <th>Feedback</th>
+                        <th>Rate</th>
+                    </tr>
+                    {% for customer_feedback in customer_feedbacks %}
+                        <tr>
+                            <td>{{ customer_feedback.name }}</td>
+                            <td>{{ customer_feedback.email }}</td>
+                            <td>{{ customer_feedback.phone }}</td>
+                            <td>{{ customer_feedback.product }}</td>
+                            <td>{{ customer_feedback.feedback }}</td>
+                            <td>{{ customer_feedback.rate }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

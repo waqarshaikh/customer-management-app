@@ -30,6 +30,7 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
+                {% if request.user.is_active %}
                 <ul class="navbar-nav">
                     {% if request.user.is_staff %}
                     <li class="nav-item">
@@ -38,15 +39,21 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'products' %}">Products</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'customer_feedbacks' %}">Customer feedbacks</a>
+                    </li>
                     {% else %}
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'account' %}">Settings</a>
                     </li>
                     {% endif %}
                 </ul>
+                {% endif %}
             </div>
+            {% if request.user.is_active %}
             <span class="logout">Hello, {{ request.user }}</span>
             <span class=""><a class="logout btn btn-outline-light" href="{% url 'logout' %}">Logout</a></span>
+            {% endif %}
         </div>
     </nav>
     <br>
