@@ -18,3 +18,12 @@ class CustomerFeedback(models.Model):
 
     def __str__(self):
         return str(self.name)
+
+class InterstedCustomer(models.Model):
+    name = models.CharField(max_length=30, null=True)
+    email = models.CharField(max_length=20, null=True)
+    phone = models.CharField(max_length=15, null=True)
+    product = models.ManyToManyField(Product)
+
+    def __str__(self):
+        return self.name
