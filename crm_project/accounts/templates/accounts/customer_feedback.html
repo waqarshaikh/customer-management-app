@@ -32,7 +32,7 @@
 
         <div class="col-md">
             <div class="card card-body">
-                <h5>Intrested Customers</h5>
+                <h5>Intrested customers</h5>
             </div>
             <div class="card card-body">
                 <table class="table">
@@ -54,4 +54,35 @@
             </div>
         </div>
     </div>
+    <br>
+    <div class="row">
+        <div class="col-md">
+            <div class="card card-body">
+                <h5>Intrested customers</h5>
+            </div>
+            <div class="card card-body">
+                <table class="table">
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Product</th>
+                        <th>Employee</th>
+                        <th>Message</th>
+                    </tr>
+                    {% for complaint in customer_complaint %}
+                        <tr>
+                            <td>{{ complaint.name }}</td>
+                            <td>{{ complaint.email }}</td>
+                            <td>{{ complaint.phone }}</td>
+                            <td>{% for product in complaint.product.all %}{{ product }} {% endfor %}</td>
+                            <td>{% for employee in complaint.employee.all %}{{ employee }} {% endfor %}</td>
+                            <td>{{ complaint.message }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
+
 {% endblock content %}

@@ -1,5 +1,5 @@
 from django.db import models
-from accounts.models import Product
+from accounts.models import Product, Employee
 
 class CustomerFeedback(models.Model):
     stars = (
@@ -24,6 +24,17 @@ class IntrestedCustomer(models.Model):
     email = models.CharField(max_length=20, null=True)
     phone = models.CharField(max_length=15, null=True)
     product = models.ManyToManyField(Product)
+
+    def __str__(self):
+        return self.name
+
+class CustomerComplaint(models.Model):
+    name = models.CharField(max_length=30, null=True)
+    email = models.CharField(max_length=20, null=True)
+    phone = models.CharField(max_length=15, null=True)
+    product = models.ManyToManyField(Product)
+    employee = models.ManyToManyField(Employee)
+    message = models.TextField(max_length=500, null=True)
 
     def __str__(self):
         return self.name
