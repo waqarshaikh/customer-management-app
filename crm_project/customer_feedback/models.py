@@ -12,14 +12,14 @@ class CustomerFeedback(models.Model):
     name = models.CharField(max_length=30, null=True)
     email = models.CharField(max_length=20, null=True)
     phone = models.CharField(max_length=15, null=True)
-    product = models.OneToOneField(Product, null=True, on_delete=models.CASCADE)
+    product = models.ManyToManyField(Product)
     feedback = models.TextField(max_length=500, null=True)
     rate = models.CharField(max_length=10, choices=stars, default='5 Stars')
 
     def __str__(self):
         return str(self.name)
 
-class InterstedCustomer(models.Model):
+class IntrestedCustomer(models.Model):
     name = models.CharField(max_length=30, null=True)
     email = models.CharField(max_length=20, null=True)
     phone = models.CharField(max_length=15, null=True)
