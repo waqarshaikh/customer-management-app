@@ -8,7 +8,7 @@ def customer_feedback(request):
 
     if request.method == 'POST':
         form = CustomerFeedbackForm(request.POST)
-
+        print(request.POST)
         if form.is_valid():
             form.save()
             return HttpResponse('<h2>Thanks for giving your valuable feedback!</h2>')

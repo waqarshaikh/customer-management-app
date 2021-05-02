@@ -21,9 +21,33 @@
                             <td>{{ customer_feedback.name }}</td>
                             <td>{{ customer_feedback.email }}</td>
                             <td>{{ customer_feedback.phone }}</td>
-                            <td>{{ customer_feedback.product }}</td>
+                            <td>{% for product in customer_feedback.product.all %}{{ product }} {% endfor %}</td>
                             <td>{{ customer_feedback.feedback }}</td>
                             <td>{{ customer_feedback.rate }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+
+        <div class="col-md">
+            <div class="card card-body">
+                <h5>Intrested Customers</h5>
+            </div>
+            <div class="card card-body">
+                <table class="table">
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Product</th>
+                    </tr>
+                    {% for customer in intrested_customer %}
+                        <tr>
+                            <td>{{ customer.name }}</td>
+                            <td>{{ customer.email }}</td>
+                            <td>{{ customer.phone }}</td>
+                            <td>{% for product in customer.product.all %}{{ product }} {% endfor %}</td>
                         </tr>
                     {% endfor %}
                 </table>
