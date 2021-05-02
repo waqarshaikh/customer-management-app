@@ -1,4 +1,4 @@
-from customer_feedback.models import CustomerFeedback
+from customer_feedback.models import CustomerFeedback, IntrestedCustomer
 from django.conf.urls import url
 from django.shortcuts import redirect, render
 from django.http import HttpResponse
@@ -55,9 +55,9 @@ def product(request):
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
 def customer_feedbacks(request):
-    print(request.body)
     customer_feedbacks = CustomerFeedback.objects.all()
-    return render(request, 'accounts/customer_feedback.html', {'customer_feedbacks': customer_feedbacks})
+    intrested_customer = IntrestedCustomer.objects.all()
+    return render(request, 'accounts/customer_feedback.html', {'customer_feedbacks': customer_feedbacks, 'intrested_customer': intrested_customer})
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
