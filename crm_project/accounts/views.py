@@ -1,4 +1,4 @@
-from customer_feedback.models import CustomerFeedback, IntrestedCustomer
+from customer_feedback.models import CustomerFeedback, IntrestedCustomer, CustomerComplaint
 from django.conf.urls import url
 from django.shortcuts import redirect, render
 from django.http import HttpResponse
@@ -42,7 +42,10 @@ def employee(request, id):
     order_count = orders.count()
     my_filter = OrderFilter(request.GET, queryset=orders)
     orders = my_filter.qs
-    context = {'employee': employee, 'orders': orders, 'order_count': order_count, 'my_filter': my_filter}
+    context = {
+        'employee': employee, 'orders': orders, 
+        'order_count': order_count, 'my_filter': my_filter
+    }
     return render(request, 'accounts/employee.html', context)
 
 
@@ -55,9 +58,17 @@ def product(request):
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
 def customer_feedbacks(request):
+    context = {}
     customer_feedbacks = CustomerFeedback.objects.all()
     intrested_customer = IntrestedCustomer.objects.all()
-    return render(request, 'accounts/customer_feedback.html', {'customer_feedbacks': customer_feedbacks, 'intrested_customer': intrested_customer})
+    customer_complaint = CustomerComplaint.objects.all()
+    context = {
+        'customer_feedbacks': customer_feedbacks,
+        'intrested_customer': intrested_customer, 
+        'customer_complaint': customer_complaint
+    }
+
+    return render(request, 'accounts/customer_feedback.html', context)
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])

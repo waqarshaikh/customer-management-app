@@ -1,7 +1,7 @@
-from accounts.models import Product
+from accounts.models import Product, Employee
 from django.forms.widgets import CheckboxSelectMultiple
 from django.forms import ModelForm
-from .models import CustomerFeedback, IntrestedCustomer
+from .models import CustomerComplaint, CustomerFeedback, IntrestedCustomer
 
 class CustomerFeedbackForm(ModelForm):
     class Meta:
@@ -26,3 +26,18 @@ class InterstedCustomerForm(ModelForm):
 
         self.fields["product"].widget = CheckboxSelectMultiple()
         self.fields["product"].queryset = Product.objects.all()
+
+class CustomerComplaintForm(ModelForm):
+    class Meta:
+        model = CustomerComplaint
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        
+        super(CustomerComplaintForm, self).__init__(*args, **kwargs)
+
+        self.fields["product"].widget = CheckboxSelectMultiple()
+        self.fields["product"].queryset = Product.objects.all()
+
+        self.fields["employee"].widget = CheckboxSelectMultiple()
+        self.fields["employee"].queryset = Employee.objects.all()
