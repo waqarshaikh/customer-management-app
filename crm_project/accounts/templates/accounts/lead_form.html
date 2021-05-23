@@ -1,0 +1,27 @@
+{% extends 'accounts/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card card-body">
+            <form action="" method="POST">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-md-6">
+                        <h3>Lead info</h3>
+                        {{ lead_form.as_p }}
+                    </div>                
+                    <div class="col-md-6">
+                        <h3>Customer info</h3>
+                        {{ customer_form.as_p }}
+                    </div>                
+                </div>
+                <input class='btn btn-primary' type="submit" value="Submit">
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
