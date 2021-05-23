@@ -10,7 +10,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import Group, User
 
 from .models import *
-from .forms import CustomerForm, OrderForm, CreateUserForm, EmployeeForm, ProductForm
+from .forms import CustomerForm, LeadForm, OrderForm, CreateUserForm, EmployeeForm, ProductForm
 from .filters import OrderFilter
 from .decorators import unauthenticated_user, allowed_users, admin_only
 
@@ -220,6 +220,33 @@ def delete_order(request, id):
     return render(request, 'accounts/delete.html', context)
 #-----------------Order end-----------------------------------------------
 
+#-----------------Lead start----------------------------------------------
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
+def leads(request):
+    leads = Lead.objects.all()
+    return render(request, 'accounts/leads.html', {'leads': leads})
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
+def create_lead(request):
+    context = {}
+    
+    lead_form = LeadForm()
+    customer_form = CustomerForm()
+
+    if request.method == 'POST':
+        lead_form = LeadForm(request.POST)
+        customer_form = CustomerForm(request.POST)
+        if lead_form.is_valid() and customer_form.is_valid():
+            lead_form.save()
+            customer_form.save()
+            return redirect('/') 
+    context = {'lead_form': lead_form, 'customer_form': customer_form}
+    return render(request, 'accounts/lead_form.html', context)
+
+
+#-----------------Lead end------------------------------------------------
 @unauthenticated_user
 def register_page(request):
     form = CreateUserForm()
