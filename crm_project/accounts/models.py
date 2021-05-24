@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models.fields.related import ForeignKey
 
 # Create your models here.
 
@@ -77,6 +78,9 @@ class Lead(models.Model):
         ('Others', 'Others'),
     )
     name = models.CharField(max_length=30, null=True, blank=True)
+    phone = models.CharField(max_length=15, null=True)
+    email = models.CharField(max_length=20, null=True)
+    address = models.TextField(null=True)
     source = models.CharField(max_length=20, null=True,  choices=SOURCES)
     employee = models.ForeignKey(Employee, null=True, on_delete=models.CASCADE)
     status = models.CharField(max_length=200, null=True, choices=STATUS)

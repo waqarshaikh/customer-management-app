@@ -232,21 +232,45 @@ def leads(request):
 def create_lead(request):
     context = {}
     
-    lead_form = LeadForm()
-    customer_form = CustomerForm()
+    form = LeadForm()
 
     if request.method == 'POST':
-        lead_form = LeadForm(request.POST)
-        customer_form = CustomerForm(request.POST)
-        if lead_form.is_valid() and customer_form.is_valid():
-            lead_form.save()
-            customer_form.save()
-            return redirect('/') 
-    context = {'lead_form': lead_form, 'customer_form': customer_form}
+        form = LeadForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('http://localhost:8000/leads/') 
+
+    context = {'form': form}
+    return render(request, 'accounts/lead_form.html', context)
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
+def update_lead(request, id):
+    lead = Lead.objects.get(id=id)
+    form = LeadForm(instance=lead)
+
+    if request.method == 'POST':
+        form = LeadForm(request.POST, instance=lead)
+        if form.is_valid():
+            form.save()
+            return redirect('http://localhost:8000/leads/') 
+    
+    context = {'form': form}
     return render(request, 'accounts/lead_form.html', context)
 
 
-#-----------------Lead end------------------------------------------------
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
+def delete_lead(request, id):
+    lead = Lead.objects.get(id=id)
+
+    if request.method == 'POST':
+        lead.delete()
+        return redirect('http://localhost:8000/leads/')
+        
+    context = {'data': lead}
+    return render(request, 'accounts/delete.html', context)
+
 @unauthenticated_user
 def register_page(request):
     form = CreateUserForm()
