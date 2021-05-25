@@ -1,0 +1,34 @@
+{% extends 'accounts/base.html' %}
+
+{% block content %}
+    <a class="btn btn-primary mb-3" href="{% url 'create_customer' %}">Add Customer</a>
+    <div class="row">
+        <div class="col-md">
+            <div class="card card-body">
+                <h5>Customers</h5>
+            </div>
+            <div class="card card-body">
+                <table class="table">
+                    <tr>
+                        <th>Name</th>
+                        <th>Employee</th>
+                        <th>Phone</th>
+                        <th>Email</th>
+                        <th>Update</th>
+                        <th>Remove</th>
+                    </tr>
+                    {% for customer in customers %}
+                        <tr>
+                            <td>{{ customer.contact.name }}</td>
+                            <td>{{ customer.opportunity.lead.employee }}</td>
+                            <td>{{ customer.contact.phone }}</td>
+                            <td>{{ customer.contact.email }}</td>
+                            <td><a href="{% url 'update_customer' customer.id %}" class="btn btn-primary btn-sm">Update</a></td>
+                            <td><a href="{% url 'delete_customer' customer.id %}" class="btn btn-danger btn-sm">Delete</a></td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
