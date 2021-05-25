@@ -22,7 +22,14 @@ urlpatterns = [
     path('leads/', views.leads, name='leads'),
     path('create_lead/', views.create_lead, name='create_lead'),
     path('update_lead/<id>', views.update_lead, name='update_lead'),
-    path('delete_lead/<id>', views.delete_lead, name='delete_lead'),   
+    path('delete_lead/<id>', views.delete_lead, name='delete_lead'),
+    path('convert_lead/<id>', views.convert_lead, name='convert_lead'),
+
+    path('opportunities/', views.opportunities, name='opportunities'),
+    path('create_opportunity/', views.create_opportunity, name='create_opportunity'),
+    path('update_opportunity/<id>', views.update_opportunity, name='update_opportunity'),
+    path('delete_opportunity/<id>', views.delete_opportunity, name='delete_opportunity'),   
+    path('convert_opportunity/<id>', views.convert_opportunity, name='convert_opportunity'),
 
     path('register/', views.register_page, name='register'),
     path('login/', views.login_page, name='login'),

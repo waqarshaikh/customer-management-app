@@ -19,10 +19,10 @@
                     </tr>
                     {% for customer in customers %}
                         <tr>
-                            <td>{{ customer.name }}</td>
-                            <td>{{ customer.employee }}</td>
-                            <td>{{ customer.phone }}</td>
-                            <td>{{ customer.email }}</td>
+                            <td>{{ customer.contact.name }}</td>
+                            <td>{{ customer.opportunity.lead.employee }}</td>
+                            <td>{{ customer.contact.phone }}</td>
+                            <td>{{ customer.contact.email }}</td>
                             <td><a href="{% url 'update_customer' customer.id %}" class="btn btn-primary btn-sm">Update</a></td>
                             <td><a href="{% url 'delete_customer' customer.id %}" class="btn btn-danger btn-sm">Delete</a></td>
                         </tr>

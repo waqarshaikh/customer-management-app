@@ -10,7 +10,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import Group, User
 
 from .models import *
-from .forms import CustomerForm, LeadForm, OrderForm, CreateUserForm, EmployeeForm, ProductForm
+from .forms import ContactForm, CustomerForm, LeadForm, OpportunityForm, OrderForm, CreateUserForm, EmployeeForm, ProductForm
 from .filters import OrderFilter
 from .decorators import unauthenticated_user, allowed_users, admin_only
 
@@ -232,15 +232,25 @@ def leads(request):
 def create_lead(request):
     context = {}
     
-    form = LeadForm()
+    lead_form = LeadForm()
+    contact_form = ContactForm()
 
     if request.method == 'POST':
-        form = LeadForm(request.POST)
-        if form.is_valid():
-            form.save()
+        lead_form = LeadForm(request.POST)
+        contact_form = ContactForm(request.POST)
+
+        if lead_form.is_valid() and contact_form.is_valid():
+            lead = lead_form.save()
+            contact = contact_form.save()
+
+            setattr(lead, 'contact', contact)
+            lead.save()
+            lead_form.save()
+            
+
             return redirect('http://localhost:8000/leads/') 
 
-    context = {'form': form}
+    context = {'lead_form': lead_form, 'contact_form': contact_form,}
     return render(request, 'accounts/lead_form.html', context)
 
 @login_required(login_url='login')
@@ -270,6 +280,77 @@ def delete_lead(request, id):
         
     context = {'data': lead}
     return render(request, 'accounts/delete.html', context)
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
+def convert_lead(request, id):
+    lead = Lead.objects.get(id=id)
+    opportunity = Opportunity.objects.create(lead=lead, contact=lead.contact)
+
+    return redirect('http://localhost:8000/opportunities/') 
+
+#-----------------Lead end----------------------------------------------
+#-----------------Opportunity start----------------------------------------------
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
+def opportunities(request):
+    opportunities = Opportunity.objects.all()
+    return render(request, 'accounts/opportunities.html', {'opportunities': opportunities})
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
+def create_opportunity(request):
+    context = {}
+    
+    form = OpportunityForm()
+
+    if request.method == 'POST':
+        form = OpportunityForm(request.POST)
+       
+        if form.is_valid():
+            form.save()
+            return redirect('/') 
+
+    context = {'form': form}
+    return render(request, 'accounts/opportunity_form.html', context)
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
+def update_opportunity(request, id):
+    opportunity = Opportunity.objects.get(id=id)
+    form = OpportunityForm(instance=opportunity)
+
+    if request.method == 'POST':
+        form = OpportunityForm(request.POST, instance=opportunity)
+        if form.is_valid():
+            form.save()
+            return redirect('http://localhost:8000/opportunities/') 
+    
+    context = {'form': form}
+    return render(request, 'accounts/opportunity_form.html', context)
+
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
+def delete_opportunity(request, id):
+    opportunity = Opportunity.objects.get(id=id)
+
+    if request.method == 'POST':
+        opportunity.delete()
+        return redirect('http://localhost:8000/opportunities/')
+        
+    context = {'data': opportunity}
+    return render(request, 'accounts/delete.html', context)
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
+def convert_opportunity(request, id):
+    opportunity = Opportunity.objects.get(id=id)
+    customer = Customer.objects.create(opportunity=opportunity, contact=opportunity.contact)
+
+    return redirect('http://localhost:8000/customers/') 
+#-----------------Opportunity end----------------------------------------------
 
 @unauthenticated_user
 def register_page(request):

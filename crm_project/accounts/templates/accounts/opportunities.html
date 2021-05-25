@@ -1,0 +1,36 @@
+{% extends 'accounts/base.html' %}
+
+{% block content %}
+    <a class="btn btn-primary mb-3" href="{% url 'create_opportunity' %}">Add Opportunity</a>
+    <div class="row">
+        <div class="col-md">
+            <div class="card card-body">
+                <h5>Opportunity</h5>
+            </div>
+            <div class="card card-body">
+                <table class="table">
+                    <tr>
+                        <th>Name</th>
+                        <th>Source</th>
+                        <th>Employee</th>
+                        <th>Status</th>
+                        <th>Convert</th>
+                        <th>Update</th>
+                        <th>Remove</th>
+                    </tr>
+                    {% for opportunity in opportunities %}
+                        <tr>
+                            <td>{{ opportunity.contact.name }}</td>
+                            <td>{{ opportunity.lead.source }}</td>
+                            <td>{{ opportunity.lead.employee }}</td>
+                            <td>{{ opportunity.lead.status }}</td>
+                            <td><a href="{% url 'convert_opportunity' opportunity.id %}" class="btn btn-primary btn-sm">To Customer</a></td>
+                            <td><a href="{% url 'update_opportunity' opportunity.id %}" class="btn btn-primary btn-sm">Update</a></td>
+                            <td><a href="{% url 'delete_opportunity' opportunity.id %}" class="btn btn-danger btn-sm">Delete</a></td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

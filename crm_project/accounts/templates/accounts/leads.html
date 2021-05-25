@@ -14,17 +14,17 @@
                         <th>Source</th>
                         <th>Employee</th>
                         <th>Status</th>
-                        {% comment %} <th>Convert</th> {% endcomment %}
+                        <th>Convert</th>
                         <th>Update</th>
                         <th>Remove</th>
                     </tr>
                     {% for lead in leads %}
                         <tr>
-                            <td>{{ lead.name }}</td>
+                            <td>{{ lead.contact.name }}</td>
                             <td>{{ lead.source }}</td>
                             <td>{{ lead.employee }}</td>
                             <td>{{ lead.status }}</td>
-                            {% comment %} <td><a href="{% url 'convert_lead' lead.id %}" class="btn btn-primary btn-sm">To Opportunity</a></td> {% endcomment %}
+                            <td><a href="{% url 'convert_lead' lead.id %}" class="btn btn-primary btn-sm">To Opportunity</a></td>
                             <td><a href="{% url 'update_lead' lead.id %}" class="btn btn-primary btn-sm">Update</a></td>
                             <td><a href="{% url 'delete_lead' lead.id %}" class="btn btn-danger btn-sm">Delete</a></td>
                         </tr>
