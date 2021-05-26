@@ -4,9 +4,6 @@ from .models import Employee
 
 def employee_profile(sender, instance, created, **kwargs):
     if created:
-        group = Group.objects.get(name='employee')
-        instance.groups.add(group)
-
         Employee.objects.create(user=instance, name=instance.username,)
     print('Profile created!')
 
