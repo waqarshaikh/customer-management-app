@@ -1,7 +1,7 @@
 {% extends 'accounts/base.html' %}
 
 {% block content %}
-    <br> 
+    <a class="btn btn-primary mb-3" href="{% url 'create_product' %}">Add Product</a>
     <div class="row">
         <div class="col-md">
             <div class="card card-body">
@@ -11,14 +11,18 @@
                 <table class="table">
                     <tr>
                         <th>Product</th>
-                        <th>Tags</th>
                         <th>Price</th>
+                        <th>Tags</th>
+                        <th>Update</th>
+                        <th>Remove</th>
                     </tr>
                     {% for product in products %}
                         <tr>
                             <td>{{ product.name }}</td>
-                            <td>{{ product.tags.name }}</td>
                             <td>{{ product.price }}</td>
+                            <td>{% for tag in product.tags.all %}{{ tag }} {% endfor %}</td>
+                            <td><a href="{% url 'update_product' product.id %}" class="btn btn-primary btn-sm">Update</a></td>
+                            <td><a href="{% url 'delete_product' product.id %}" class="btn btn-danger btn-sm">Delete</a></td>
                         </tr>
                     {% endfor %}
                 </table>

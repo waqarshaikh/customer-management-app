@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 
 # Create your models here.
-class Customer(models.Model):
+class Employee(models.Model):
     user = models.OneToOneField(User, null=True, blank=True, on_delete=models.CASCADE)
     name = models.CharField(max_length=50, null=True)
     phone = models.CharField(max_length=15, null=True)
@@ -36,7 +36,7 @@ class Order(models.Model):
         ('Delivered', 'Delivered')
     )
 
-    customer = models.ForeignKey(Customer, null=True, on_delete=models.SET_NULL)
+    employee = models.ForeignKey(Employee, null=True, on_delete=models.SET_NULL)
     product = models.ForeignKey(Product, null=True, on_delete=models.SET_NULL)
     status = models.CharField(max_length=20, null=True,  choices=STATUS)
     date_created = models.DateTimeField(auto_now_add=True, null=True)

@@ -1,0 +1,22 @@
+{% extends 'accounts/base.html' %}
+
+{% block content %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<div class="row">
+    <div class="col-md-6">
+        <div class="card card-body">
+            <h1>Customer Feedback</h1>
+            <hr>
+            <form action="" method="POST">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <input class='btn btn-primary' type="submit" value="Submit">
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+
+{% endblock content %}
