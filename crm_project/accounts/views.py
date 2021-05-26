@@ -7,10 +7,10 @@ from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.models import Group
+from django.contrib.auth.models import Group, User
 
 from .models import *
-from .forms import OrderForm, CreateUserForm, EmployeeForm, ProductForm
+from .forms import ContactForm, CustomerForm, LeadForm, OpportunityForm, OrderForm, CreateUserForm, EmployeeForm, ProductForm
 from .filters import OrderFilter
 from .decorators import unauthenticated_user, allowed_users, admin_only
 
@@ -51,12 +51,6 @@ def employee(request, id):
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
-def product(request):
-    products = Product.objects.all()
-    return render(request, 'accounts/products.html', {'products': products})
-
-@login_required(login_url='login')
-@allowed_users(allowed_roles=['admin'])
 def customer_feedbacks(request):
     context = {}
     customer_feedbacks = CustomerFeedback.objects.all()
@@ -69,6 +63,67 @@ def customer_feedbacks(request):
     }
 
     return render(request, 'accounts/customer_feedback.html', context)
+
+#-------------------------Customer start--------------------------------------- 
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
+def customer(request):
+    customers = Customer.objects.all()
+    return render(request, 'accounts/customers.html', {'customers': customers})
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
+def create_customer(request):
+    context = {}
+    form = CustomerForm()
+
+    if request.method == 'POST':
+        form = CustomerForm(request.POST)
+
+        if form.is_valid():
+            print(request.POST)
+            form.save()
+            return redirect('http://localhost:8000/customers/')
+    
+    context['form'] = form
+    return render(request, 'accounts/create_customer.html', context)
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
+def update_customer(request, id):
+    customer = Customer.objects.get(id=id)
+    form = CustomerForm(instance=customer)
+
+    if request.method == 'POST':
+        form = CustomerForm(request.POST, instance=customer)
+        if form.is_valid():
+            form.save()
+            return redirect('http://localhost:8000/customers/') 
+    
+    context = {'form': form}
+    return render(request, 'accounts/create_customer.html', context)
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
+def delete_customer(request, id):
+    customer = Customer.objects.get(id=id)
+
+    if request.method == 'POST':
+        customer.delete()
+        return redirect('http://localhost:8000/customers/')
+        
+    context = {'data': customer}
+    return render(request, 'accounts/delete.html', context)
+#---------------------------Customer end--------------------------------------------------
+
+#---------------------------Product start-------------------------------------------------
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
+def product(request):
+    products = Product.objects.all()
+    return render(request, 'accounts/products.html', {'products': products})
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
@@ -114,8 +169,9 @@ def delete_product(request, id):
         
     context = {'data': product}
     return render(request, 'accounts/delete.html', context)
+#------------------------------Product end-------------------------------------------
 
-
+#------------------------------Orders start-----------------------------------------
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
 def create_order(request, id):
@@ -162,7 +218,139 @@ def delete_order(request, id):
         
     context = {'data': order}
     return render(request, 'accounts/delete.html', context)
+#-----------------Order end-----------------------------------------------
 
+#-----------------Lead start----------------------------------------------
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
+def leads(request):
+    leads = Lead.objects.all()
+    return render(request, 'accounts/leads.html', {'leads': leads})
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
+def create_lead(request):
+    context = {}
+    
+    lead_form = LeadForm()
+    contact_form = ContactForm()
+
+    if request.method == 'POST':
+        lead_form = LeadForm(request.POST)
+        contact_form = ContactForm(request.POST)
+
+        if lead_form.is_valid() and contact_form.is_valid():
+            lead = lead_form.save()
+            contact = contact_form.save()
+
+            setattr(lead, 'contact', contact)
+            lead.save()
+            lead_form.save()
+            
+
+            return redirect('http://localhost:8000/leads/') 
+
+    context = {'lead_form': lead_form, 'contact_form': contact_form,}
+    return render(request, 'accounts/lead_form.html', context)
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
+def update_lead(request, id):
+    lead = Lead.objects.get(id=id)
+    form = LeadForm(instance=lead)
+
+    if request.method == 'POST':
+        form = LeadForm(request.POST, instance=lead)
+        if form.is_valid():
+            form.save()
+            return redirect('http://localhost:8000/leads/') 
+    
+    context = {'form': form}
+    return render(request, 'accounts/lead_form.html', context)
+
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
+def delete_lead(request, id):
+    lead = Lead.objects.get(id=id)
+
+    if request.method == 'POST':
+        lead.delete()
+        return redirect('http://localhost:8000/leads/')
+        
+    context = {'data': lead}
+    return render(request, 'accounts/delete.html', context)
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
+def convert_lead(request, id):
+    lead = Lead.objects.get(id=id)
+    opportunity = Opportunity.objects.create(lead=lead, contact=lead.contact)
+
+    return redirect('http://localhost:8000/opportunities/') 
+
+#-----------------Lead end----------------------------------------------
+#-----------------Opportunity start----------------------------------------------
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
+def opportunities(request):
+    opportunities = Opportunity.objects.all()
+    return render(request, 'accounts/opportunities.html', {'opportunities': opportunities})
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
+def create_opportunity(request):
+    context = {}
+    
+    form = OpportunityForm()
+
+    if request.method == 'POST':
+        form = OpportunityForm(request.POST)
+       
+        if form.is_valid():
+            form.save()
+            return redirect('/') 
+
+    context = {'form': form}
+    return render(request, 'accounts/opportunity_form.html', context)
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
+def update_opportunity(request, id):
+    opportunity = Opportunity.objects.get(id=id)
+    form = OpportunityForm(instance=opportunity)
+
+    if request.method == 'POST':
+        form = OpportunityForm(request.POST, instance=opportunity)
+        if form.is_valid():
+            form.save()
+            return redirect('http://localhost:8000/opportunities/') 
+    
+    context = {'form': form}
+    return render(request, 'accounts/opportunity_form.html', context)
+
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
+def delete_opportunity(request, id):
+    opportunity = Opportunity.objects.get(id=id)
+
+    if request.method == 'POST':
+        opportunity.delete()
+        return redirect('http://localhost:8000/opportunities/')
+        
+    context = {'data': opportunity}
+    return render(request, 'accounts/delete.html', context)
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
+def convert_opportunity(request, id):
+    opportunity = Opportunity.objects.get(id=id)
+    customer = Customer.objects.create(opportunity=opportunity, contact=opportunity.contact)
+
+    return redirect('http://localhost:8000/customers/') 
+#-----------------Opportunity end----------------------------------------------
 
 @unauthenticated_user
 def register_page(request):
@@ -172,9 +360,10 @@ def register_page(request):
         form = CreateUserForm(request.POST)
         if form.is_valid():
             user = form.save()
-
+            
             username = form.cleaned_data.get('username')
-            messages.success(request, 'Account created for ' + username)
+            messages.success(request, 'Account created for ' + username) 
+
             return redirect('login')
         print('Profile created!')
         
@@ -191,12 +380,14 @@ def login_page(request):
         user = authenticate(username=username, password=password)
 
         if user is not None:
+            
             login(request, user)
+            print(request.user)
             return redirect('home')
         else:
             messages.warning(request, 'Username or Password is incorrect.')
 
-    context ={}
+    context = {}
     return render(request, 'accounts/login.html', context)
 
 
@@ -208,6 +399,7 @@ def logout_user(request):
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['employee'])
 def user_page(request):
+    
     orders = request.user.employee.order_set.all()
 
     total_orders = orders.count()
@@ -216,6 +408,7 @@ def user_page(request):
     context = {'orders': orders,  'total_orders': total_orders,
         'delivered': delivered, 'pending': pending
     }
+    print('request')
     return render(request, 'accounts/user.html', context)
 
 
