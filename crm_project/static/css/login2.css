@@ -1,0 +1,132 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@600&display=swap');
+body,
+html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow-x: hidden;
+    /* overflow-y: hidden; */
+    /* background: linear-gradient(45deg, #1d1d30, #4716be, #3f45ff, #242b7a, #1d1d30); */
+    background: url('https://static.vecteezy.com/system/resources/previews/000/581/500/original/blue-abstract-geometric-background-vector-illustration.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.user_card {
+    width: 350px;
+    position: relative;
+    display: flex;
+    padding-top: 40px;
+    justify-content: center;
+    flex-direction: column;
+    padding-bottom: 50px;
+    border-radius: 5px;
+}
+
+.user-img {
+    height: 88px;
+    width: 87px;
+    border-radius: 47px;
+    padding: 7px;
+    box-shadow: 0px 0px 6px 0px black;
+    margin: auto;
+}
+
+.banner-crm-img {
+    height: 100%;
+    width: 100%;
+    display: block;
+    border-bottom: 10px solid #ffbc00;
+    border-right: 10px solid #ffbc00;
+}
+
+.input-box {
+    outline: none;
+    padding: 2px;
+    border: none;
+    width: 85%;
+    border-bottom: 2px solid #000000;
+    margin-bottom: 10px;
+    background: none;
+    color: #1f15a8;
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.form_container {
+    margin-top: 20px;
+}
+
+#form-title {
+    color: #5C2DF1;
+    text-align: center;
+    margin-top: 14px;
+    font-family: Roboto Slab;
+    margin-top: 20px;
+}
+
+.form-footer {
+    color: rgb(0, 0, 0);
+}
+
+.login_btn {
+    width: 100%;
+    background: #000000 !important;
+    color: white !important;
+}
+
+.login_btn:focus {
+    box-shadow: none !important;
+    outline: 0px !important;
+}
+
+.login_container {
+    padding: 0 2rem;
+}
+
+.input-group-text {
+    background: #ffffff !important;
+    color: #ffb610;
+    border: 0 !important;
+    font-size: 24px;
+    margin-left: -20px;
+}
+
+.input_user,
+.input_pass:focus {
+    box-shadow: none !important;
+    outline: 0px !important;
+}
+
+#messages {
+    text-align: center;
+    background-color: red;
+    color: rgb(255 255 255);
+    padding: 5px;
+    margin-top: 10px;
+    border-radius: 14px;
+    width: auto;
+}
+
+
+/* ------------for buttons-------------- */
+
+.btn-orange-crm:hover {
+    background-color: white;
+    color: black;
+    text-decoration: none;
+}
+
+.btn-primary-crm:hover {
+    background-color: white;
+    color: black;
+    cursor: pointer;
+}
+
+
+/* ----------------password reset page css------------------- */
+
+#email_submit_btn {
+    margin-left: 98px;
+    margin-top: 15px;
+}

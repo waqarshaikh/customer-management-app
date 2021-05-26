@@ -1,0 +1,25 @@
+.btn-primary-crm {
+    border: 3px solid #412896;
+    background-color: #5c2df1;
+    padding: 6px;
+    font-size: 15px;
+    letter-spacing: 1px;
+    font-weight: 500;
+    color: white;
+    padding-right: 30px;
+    padding-left: 30px;
+    transition: all 0.3s;
+}
+
+.btn-orange-crm {
+    border: 3px solid #d59547;
+    background-color: #f8a43c;
+    padding: 6px;
+    font-size: 15px;
+    letter-spacing: 1px;
+    font-weight: 500;
+    color: white;
+    padding-right: 21px;
+    padding-left: 21px;
+    transition: all 0.3s;
+}
