@@ -3,43 +3,39 @@ from django.http import HttpResponse
 from django.shortcuts import redirect, render
 
 def customer_feedback(request):
-    context = {}
-    form = CustomerFeedbackForm()
+    form = CustomerFeedbackForm(request.POST)
 
-    if request.method == 'POST':
-        form = CustomerFeedbackForm(request.POST)
-        print(request.POST)
-        if form.is_valid():
-            form.save()
-            return HttpResponse('<h2>Thanks for giving your valuable feedback!</h2>')
-    
-    context['form'] = form
-    return render(request, 'customer_feedback/customer_feedback.html', context)
+    if form.is_valid():
+        form.save()
+    return HttpResponse('<h2>Thanks for giving your valuable feedback!</h2>')
+  
 
 def intrested_customer(request):
-    context = {}
-    form = InterstedCustomerForm()
+    form = InterstedCustomerForm(request.POST)
 
-    if request.method == 'POST':
-        form = InterstedCustomerForm(request.POST)
+    if form.is_valid():
+        form.save()
 
-        if form.is_valid():
-            form.save()
-            return HttpResponse('<h2>Thanks for showing your intrest in our product!</h2>')
-    
-    context['form'] = form
-    return render(request, 'customer_feedback/intrested_customer.html', context)
+    return HttpResponse('<h2>Thanks for showing your intrest in our product!</h2>')
+
 
 def customer_complaint(request):
-    context = {}
-    form = CustomerComplaintForm()
+    form = CustomerComplaintForm(request.POST)
 
-    if request.method == 'POST':
-        form = CustomerComplaintForm(request.POST)
+    if form.is_valid():
+        form.save()
+             
+    return HttpResponse('<h2>Thanks for submiting your complaint!</h2>')
 
-        if form.is_valid():
-            form.save()
-            return HttpResponse('<h2>Thanks for submiting your complaint!</h2>')
-    
-    context['form'] = form
-    return render(request, 'customer_feedback/customer_complaint.html', context)
+def customer_feedback_form(request):
+    customer_complaint_form = CustomerComplaintForm()
+    customer_feedback_form = CustomerFeedbackForm()
+    intrested_customer_form = InterstedCustomerForm()
+
+    context = {
+        'customer_complaint_form': customer_complaint_form,
+        'customer_feedback_form': customer_feedback_form,
+        'intrested_customer_form': intrested_customer_form
+    }
+
+    return render(request, 'customer_feedback/customer_feedback_form.html', context)

@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'accounts.apps.AccountsConfig',
     'customer_feedback.apps.CustomerFeedbackConfig',
     'django_filters',
+    'widget_tweaks',
 ]
 
 MIDDLEWARE = [
