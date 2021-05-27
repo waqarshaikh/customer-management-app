@@ -273,18 +273,21 @@ def create_lead(request):
     return render(request, 'accounts/lead_form.html', context)
 
 @login_required(login_url='login')
-@allowed_users(allowed_roles=['employee'])
+@allowed_users(allowed_roles=['employee', 'admin'])
 def update_lead(request, id):
     lead = Lead.objects.get(id=id)
-    form = LeadForm(instance=lead)
+    lead_form = LeadForm(instance=lead)
+    contact_form = ContactForm(instance=lead.contact)
 
     if request.method == 'POST':
-        form = LeadForm(request.POST, instance=lead)
-        if form.is_valid():
-            form.save()
+        lead_form = LeadForm(request.POST, instance=lead)
+        contact_form = ContactForm(request.POST, instance=lead.contact)
+        if lead_form.is_valid() and contact_form.is_valid():
+            lead_form.save()
+            contact_form.save()
             return redirect('http://localhost:8000/leads/') 
     
-    context = {'form': form}
+    context = {'lead_form': lead_form, 'contact_form': contact_form}
     return render(request, 'accounts/lead_form.html', context)
 
 
