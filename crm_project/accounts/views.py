@@ -18,10 +18,10 @@ from .decorators import unauthenticated_user, allowed_users, admin_only
 @login_required(login_url='login')
 @admin_only
 def home(request):
+    print(request.user)
     orders = Order.objects.all()
     employees = Employee.objects.all()
     total_employees = employees.count()
-    
     total_orders = orders.count()
     delivered = orders.filter(status='Delivered').count()
     pending = orders.filter(status='Pending').count()
@@ -65,15 +65,27 @@ def customer_feedbacks(request):
     return render(request, 'accounts/customer_feedback.html', context)
 
 #-------------------------Customer start--------------------------------------- 
+def get_employee_customers(request):
+    opportunities = get_employee_opportunities(request)
+    customers = []
+    for opportunity in opportunities:
+        if hasattr(opportunity, 'customer'):
+            customers.append(opportunity.customer)
+    return customers
 
 @login_required(login_url='login')
-@allowed_users(allowed_roles=['admin'])
+@allowed_users(allowed_roles=['admin', 'employee'])
 def customer(request):
-    customers = Customer.objects.all()
+    opportunities = []
+    customers = []
+    if request.user.is_staff:
+        customers = Customer.objects.all()
+    else:
+        customers = get_employee_customers(request)
     return render(request, 'accounts/customers.html', {'customers': customers})
 
 @login_required(login_url='login')
-@allowed_users(allowed_roles=['admin'])
+@allowed_users(allowed_roles=['admin', 'employee'])
 def create_customer(request):
     context = {}
     form = CustomerForm()
@@ -90,7 +102,7 @@ def create_customer(request):
     return render(request, 'accounts/create_customer.html', context)
 
 @login_required(login_url='login')
-@allowed_users(allowed_roles=['admin'])
+@allowed_users(allowed_roles=['admin', 'employee'])
 def update_customer(request, id):
     customer = Customer.objects.get(id=id)
     form = CustomerForm(instance=customer)
@@ -105,7 +117,7 @@ def update_customer(request, id):
     return render(request, 'accounts/create_customer.html', context)
 
 @login_required(login_url='login')
-@allowed_users(allowed_roles=['admin'])
+@allowed_users(allowed_roles=['admin', 'employee'])
 def delete_customer(request, id):
     customer = Customer.objects.get(id=id)
 
@@ -222,9 +234,12 @@ def delete_order(request, id):
 
 #-----------------Lead start----------------------------------------------
 @login_required(login_url='login')
-@allowed_users(allowed_roles=['admin'])
+@allowed_users(allowed_roles=['admin', 'employee'])
 def leads(request):
-    leads = Lead.objects.all()
+    if request.user.is_staff:
+        leads = Lead.objects.all()
+    else: 
+        leads = request.user.employee.lead_set.all()
     return render(request, 'accounts/leads.html', {'leads': leads})
 
 @login_required(login_url='login')
@@ -254,7 +269,7 @@ def create_lead(request):
     return render(request, 'accounts/lead_form.html', context)
 
 @login_required(login_url='login')
-@allowed_users(allowed_roles=['admin'])
+@allowed_users(allowed_roles=['employee'])
 def update_lead(request, id):
     lead = Lead.objects.get(id=id)
     form = LeadForm(instance=lead)
@@ -270,7 +285,7 @@ def update_lead(request, id):
 
 
 @login_required(login_url='login')
-@allowed_users(allowed_roles=['admin'])
+@allowed_users(allowed_roles=['employee'])
 def delete_lead(request, id):
     lead = Lead.objects.get(id=id)
 
@@ -282,24 +297,39 @@ def delete_lead(request, id):
     return render(request, 'accounts/delete.html', context)
 
 @login_required(login_url='login')
-@allowed_users(allowed_roles=['admin'])
+@allowed_users(allowed_roles=['employee'])
 def convert_lead(request, id):
     lead = Lead.objects.get(id=id)
     opportunity = Opportunity.objects.create(lead=lead, contact=lead.contact)
 
+    messages.success(request, f'Lead  {lead}  succesfully converted to Opportunity.')
+
+    if request.user.is_staff:
+        return redirect('/')
     return redirect('http://localhost:8000/opportunities/') 
 
 #-----------------Lead end----------------------------------------------
 #-----------------Opportunity start----------------------------------------------
+def get_employee_opportunities(request):
+    opportunities = []
+    leads = request.user.employee.lead_set.all()
+    for lead in leads:
+        if hasattr(lead, 'opportunity'):
+            opportunities.append(lead.opportunity)
+    return opportunities
 
 @login_required(login_url='login')
-@allowed_users(allowed_roles=['admin'])
+@allowed_users(allowed_roles=['admin', 'employee'])
 def opportunities(request):
-    opportunities = Opportunity.objects.all()
+    opportunities = []
+    if request.user.is_staff:
+        opportunities = Opportunity.objects.all()
+    else: 
+        opportunities = get_employee_opportunities(request)
     return render(request, 'accounts/opportunities.html', {'opportunities': opportunities})
 
 @login_required(login_url='login')
-@allowed_users(allowed_roles=['admin'])
+@allowed_users(allowed_roles=['employee'])
 def create_opportunity(request):
     context = {}
     
@@ -316,7 +346,7 @@ def create_opportunity(request):
     return render(request, 'accounts/opportunity_form.html', context)
 
 @login_required(login_url='login')
-@allowed_users(allowed_roles=['admin'])
+@allowed_users(allowed_roles=['employee'])
 def update_opportunity(request, id):
     opportunity = Opportunity.objects.get(id=id)
     form = OpportunityForm(instance=opportunity)
@@ -332,7 +362,7 @@ def update_opportunity(request, id):
 
 
 @login_required(login_url='login')
-@allowed_users(allowed_roles=['admin'])
+@allowed_users(allowed_roles=['employee'])
 def delete_opportunity(request, id):
     opportunity = Opportunity.objects.get(id=id)
 
@@ -344,10 +374,12 @@ def delete_opportunity(request, id):
     return render(request, 'accounts/delete.html', context)
 
 @login_required(login_url='login')
-@allowed_users(allowed_roles=['admin'])
+@allowed_users(allowed_roles=['employee', 'admin'])
 def convert_opportunity(request, id):
     opportunity = Opportunity.objects.get(id=id)
     customer = Customer.objects.create(opportunity=opportunity, contact=opportunity.contact)
+
+    messages.success(request, request, f'Opportunity {opportunity} succesfully converted to Customer.')
 
     return redirect('http://localhost:8000/customers/') 
 #-----------------Opportunity end----------------------------------------------
@@ -365,7 +397,6 @@ def register_page(request):
             messages.success(request, 'Account created for ' + username) 
 
             return redirect('login')
-        print('Profile created!')
         
     context = {'form': form}
     return render(request, 'accounts/register.html', context)
@@ -399,14 +430,18 @@ def logout_user(request):
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['employee'])
 def user_page(request):
-    
     orders = request.user.employee.order_set.all()
-
+    leads = request.user.employee.lead_set.all()
+    opportunities = get_employee_opportunities(request)
+    customers = get_employee_customers(request)
+    print(leads.count())
     total_orders = orders.count()
     delivered = orders.filter(status='Delivered').count()
     pending = orders.filter(status='Pending').count()
-    context = {'orders': orders,  'total_orders': total_orders,
-        'delivered': delivered, 'pending': pending
+    context = {
+        'orders': orders,  'total_orders': total_orders,
+        'delivered': delivered, 'pending': pending, 
+        'customers': customers, 'leads': leads, 'opportunities': opportunities
     }
     print('request')
     return render(request, 'accounts/user.html', context)
