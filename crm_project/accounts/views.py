@@ -8,9 +8,11 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import Group, User
+from django.core.mail import send_mail
+from django.conf import settings
 
 from .models import *
-from .forms import ContactForm, CustomerForm, LeadForm, OpportunityForm, OrderForm, CreateUserForm, EmployeeForm, ProductForm
+from .forms import ContactForm, CustomerForm, EmailForm, LeadForm, OpportunityForm, OrderForm, CreateUserForm, EmployeeForm, ProductForm
 from .filters import OrderFilter
 from .decorators import unauthenticated_user, allowed_users, admin_only
 
@@ -127,6 +129,8 @@ def delete_customer(request, id):
         
     context = {'data': customer}
     return render(request, 'accounts/delete.html', context)
+
+
 #---------------------------Customer end--------------------------------------------------
 
 #---------------------------Product start-------------------------------------------------
@@ -411,7 +415,7 @@ def login_page(request):
         user = authenticate(username=username, password=password)
 
         if user is not None:
-            
+
             login(request, user)
             print(request.user)
             return redirect('home')
@@ -426,6 +430,31 @@ def logout_user(request):
     logout(request)
     return redirect('login')
 
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['employee'])
+def send_email(request, id):
+    form = EmailForm()
+    customer = Customer.objects.get(id=id)
+
+    if request.method == 'POST':
+        form = EmailForm(request)
+        
+        message = request.POST.get('message')
+        subject = request.POST.get('subject')
+        from_email = request.user.employee.email
+        to_email = customer.contact.email
+
+        print(f"Message: {message}\n Subject: {subject}\n From: {from_email}\n To: {to_email}")
+
+        send_mail(subject=subject, from_email=from_email, message=message, recipient_list=[to_email, ], fail_silently=True)
+
+        messages.success(request, f'Email sucesfully send to {customer}')
+        return HttpResponse('Email sent')
+    
+    context = {'form': form}
+
+    return render(request, 'accounts/email_form.html', context)
+    
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['employee'])

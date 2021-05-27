@@ -9,7 +9,7 @@ class Employee(models.Model):
     user = models.OneToOneField(User, null=True, blank=True, on_delete=models.CASCADE)
     name = models.CharField(max_length=50, null=True)
     phone = models.CharField(max_length=15, null=True)
-    email = models.EmailField(max_length=20, null=True)
+    email = models.EmailField(max_length=225, null=True)
     date_created = models.DateTimeField(auto_now_add=True, null=True)
     profile_pic = models.ImageField(null=True, blank=True, default='default-profile-pic.jpg')
 
@@ -103,5 +103,5 @@ class Customer(models.Model):
     opportunity = models.OneToOneField(Opportunity, null=True, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, null=True, on_delete=models.CASCADE)
 
-    # def __str__(self):
-    #     return str(self.contact.name)
+    def __str__(self):
+        return str(self.contact.name)
