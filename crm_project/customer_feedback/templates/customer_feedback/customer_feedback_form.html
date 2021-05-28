@@ -1,0 +1,47 @@
+{% extends 'accounts/base.html' %}
+
+{% block content %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<div class="row">
+    <div class="col-md-6">
+        <div class="card card-body">
+            <h1>Customer Feedback</h1>
+            <hr>
+            <form action="customer_feedback/" method="POST">
+                {% csrf_token %}
+                {{ customer_feedback_form.as_p }}
+                <input class='btn btn-primary' type="submit" value="Submit">
+            </form>
+        </div>
+    </div>
+</div>
+<hr>
+<div class="row">
+    <div class="col-md-6">
+        <div class="card card-body">
+            <h1>Intrested Customer</h1>
+            <hr>
+            <form action="intrested_customer/" method="POST">
+                {% csrf_token %}
+                {{ intrested_customer_form.as_p }}
+                <input class='btn btn-primary' type="submit" value="Submit">
+            </form>
+        </div>
+    </div>
+</div>
+<hr>
+<div class="row">
+    <div class="col-md-6">
+        <div class="card card-body">
+            <h1>Customer Complaint</h1>
+            <hr>
+            <form action="customer_complaint/" method="POST">
+                {% csrf_token %}
+                {{ customer_complaint_form.as_p }}
+                <input class='btn btn-primary' type="submit" value="Submit">
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

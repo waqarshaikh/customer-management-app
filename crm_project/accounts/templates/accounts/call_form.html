@@ -1,21 +1,21 @@
 {% extends 'accounts/base.html' %}
+{% load static %}
 
 {% block content %}
+
 <div class="row">
     <div class="col-md-6">
         <div class="card card-body">
-            <h1>Intrested Customer</h1>
+            <h3>Add Call</h3>
             <hr>
             <form action="" method="POST">
-                {% csrf_token %}
-                {{ form.as_p }}
+                {% csrf_token %} 
+                <h3>Call info</h3>
+                {{ call_form.as_p }}                       
                 <input class='btn btn-primary' type="submit" value="Submit">
             </form>
         </div>
     </div>
 </div>
-
-
-
 
 {% endblock content %}

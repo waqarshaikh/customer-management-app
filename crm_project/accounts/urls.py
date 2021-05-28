@@ -25,6 +25,10 @@ urlpatterns = [
     path('delete_lead/<id>', views.delete_lead, name='delete_lead'),
     path('convert_lead/<id>', views.convert_lead, name='convert_lead'),
 
+    path('lead_detail/<id>', views.lead_detail_view, name='lead_detail'),
+
+    path('create_call/<id>', views.create_call, name='create_call'),
+
     path('opportunities/', views.opportunities, name='opportunities'),
     path('create_opportunity/', views.create_opportunity, name='create_opportunity'),
     path('update_opportunity/<id>', views.update_opportunity, name='update_opportunity'),
@@ -35,6 +39,7 @@ urlpatterns = [
     path('login/', views.login_page, name='login'),
     path('logout/', views.logout_user, name='logout'),
     path('user/', views.user_page, name='user-page'),
+    path('send_email/<id>', views.send_email, name='send-email'),
     path('account/', views.account_settings, name='account'),
     path('reset_password/', auth_views.PasswordResetView.as_view(template_name='accounts/password_reset.html'), name='reset_password'),
     path('reset_password_sent/', auth_views.PasswordResetDoneView.as_view(template_name='accounts/password_reset_sent.html'), name='password_reset_done'),

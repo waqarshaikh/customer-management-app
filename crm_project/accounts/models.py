@@ -9,7 +9,7 @@ class Employee(models.Model):
     user = models.OneToOneField(User, null=True, blank=True, on_delete=models.CASCADE)
     name = models.CharField(max_length=50, null=True)
     phone = models.CharField(max_length=15, null=True)
-    email = models.CharField(max_length=20, null=True)
+    email = models.EmailField(max_length=225, null=True)
     date_created = models.DateTimeField(auto_now_add=True, null=True)
     profile_pic = models.ImageField(null=True, blank=True, default='default-profile-pic.jpg')
 
@@ -50,17 +50,50 @@ class Order(models.Model):
         return self.product.name
 
 class Contact(models.Model):
-    name = models.CharField(max_length=50, null=True)
+    name = models.CharField(max_length=255, null=True)
     phone = models.CharField(max_length=15, null=True)
-    email = models.CharField(max_length=20, null=True)
-    address = models.TextField(null=True)
+    email = models.EmailField(max_length=255, null=True)
+    designation = models.CharField(max_length=255, null=True)
     date_created = models.DateTimeField(auto_now_add=True, null=True)
     
     def __str__(self):
         return self.name
 
+class Call(models.Model):
+    CALL_TYPES = (
+        ("Call", "Call"),
+        ("Conference", "Conference"),
+        ("Skype", "Skype"),
+        ("WhatsApp", "WhatsApp"),
+    )
+
+    FLAGS = (
+        ("No Answer", "No Answer"),
+        ("Important", "Important"),
+        ("Busy", "Busy"),
+        ("Urgent", "Urgent"),
+        ("Left message", "Left message"),
+        ("Reschedule", "Reschedule"),
+    )
+    date = models.DateTimeField(null=True)
+    call_type = models.CharField(max_length=255, null=True,  choices=CALL_TYPES)
+    flag = models.CharField(max_length=255, null=True,  choices=FLAGS)
+    description = models.TextField(max_length=255, null=True, blank=True)
+    
+    def __str__(self):
+        return self.call_type
+
+
 class Company(models.Model):
-    pass
+    name = models.CharField(max_length=255, null=True)
+    phone = models.CharField(max_length=15, null=True)
+    email = models.EmailField(max_length=255, null=True)
+    address = models.TextField(max_length=255, null=True)
+    website = models.URLField(max_length=255)
+    profile_pic = models.ImageField(null=True, blank=True, default='default-profile-pic.jpg', verbose_name="Logo/Photo")
+    
+    def __str__(self):
+        return self.name
 
 class Lead(models.Model):
     SOURCES = (
@@ -83,10 +116,15 @@ class Lead(models.Model):
         ('Others', 'Others'),
     )
     contact = models.ForeignKey(Contact, null=True, on_delete=models.CASCADE)
+    company = models.ForeignKey(Company, null=True, on_delete=models.CASCADE)
+    call = models.ForeignKey(Call, null=True, on_delete=models.CASCADE)
     source = models.CharField(max_length=20, null=True,  choices=SOURCES)
-    employee = models.ForeignKey(Employee, null=True, on_delete=models.CASCADE)
+    employee = models.ForeignKey(Employee, null=True, on_delete=models.CASCADE, verbose_name='Assigned To')
     status = models.CharField(max_length=200, null=True, choices=STATUS)
     comment = models.TextField(max_length=100, null=True, blank=True)
+
+    def class_name(self):
+        return self.__class__.__name__
 
     def __str__(self):
         return self.contact.name
@@ -103,5 +141,5 @@ class Customer(models.Model):
     opportunity = models.OneToOneField(Opportunity, null=True, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, null=True, on_delete=models.CASCADE)
 
-    # def __str__(self):
-    #     return str(self.contact.name)
+    def __str__(self):
+        return str(self.contact.name)

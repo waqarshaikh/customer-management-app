@@ -33,6 +33,9 @@ def admin_only(view_function):
         if request.user.groups.exists():
             group = request.user.groups.all()[0].name
         
+        if group == None:
+            return HttpResponse("<h1>Restircted Access</h1><br>Once the Admin assigns you as Employee you will be able to view this page.<a href='logout/'>Log Out</a>")
+
         if group == 'employee':
             return redirect('user-page')
         else:
