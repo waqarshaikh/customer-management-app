@@ -1,3 +1,4 @@
+from typing import DefaultDict
 from customer_feedback.models import CustomerFeedback, IntrestedCustomer, CustomerComplaint
 from django.conf.urls import url
 from django.shortcuts import redirect, render
@@ -9,6 +10,10 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import Group, User
 from django.core.mail import send_mail
+from django.core.mail import EmailMessage
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.image import MIMEImage
 from django.conf import settings
 
 from .models import *
@@ -507,18 +512,35 @@ def send_email(request, id):
     customer = Customer.objects.get(id=id)
 
     if request.method == 'POST':
-        form = EmailForm(request)
-        
-        message = request.POST.get('message')
-        subject = request.POST.get('subject')
-        from_email = request.user.employee.email
-        to_email = customer.contact.email
+        form = EmailForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            
+            message = request.POST.get('message')
+            subject = request.POST.get('subject')
+            from_email = settings.EMAIL_HOST_USER
+            to_email = "shaikhwaqar1999@gmail.com"
+            
+            img_data =  open('D:\Web\Django\customer-management-app\crm_project\static\images\photo.jpg', 'rb').read()
 
-        print(f"Message: {message}\n Subject: {subject}\n From: {from_email}\n To: {to_email}")
+            html_part = MIMEMultipart(_subtype='related')
+           
+            body = MIMEText('<h1>Image below: </h1><br><img src="cid:myimage" />', _subtype='html')
+            html_part.attach(body)
 
-        send_mail(subject=subject, from_email=from_email, message=message, recipient_list=[to_email, ], fail_silently=True)
+            img = MIMEImage(img_data, 'jpeg')
+            img.add_header('Content-Id', '<myimage>')  # angle brackets are important
+            img.add_header("Content-Disposition", "inline", filename="myimage") # David Hess recommended this edit
+            html_part.attach(img)
 
-        messages.success(request, f'Email sucesfully send to {customer}')
+            msg = EmailMessage(subject, message, from_email, [to_email])
+            msg.attach(html_part) 
+            print(f"Message: {message}\n Subject: {subject}\n From: {from_email}\n To: {to_email}\nImage: {img}")
+            # Attach the raw MIMEBase descendant. This is a public method on EmailMessage
+            msg.send()
+            
+            messages.success(request, f'Email sucesfully send to {customer}')
+        print(form.errors)
         return HttpResponse('Email sent')
     
     context = {'form': form}
