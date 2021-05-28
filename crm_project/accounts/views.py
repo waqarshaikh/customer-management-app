@@ -280,7 +280,7 @@ def create_lead(request):
             contact = contact_form.save()
             company = company_form.save()
 
-            setattr(lead, 'contact', contact)
+            setattr(lead, 'contact', contact)   
             lead.save()
             setattr(lead, 'company', company)
             lead.save()

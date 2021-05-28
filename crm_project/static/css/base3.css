@@ -1,0 +1,277 @@
+/* -----------google fonts--------- */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Teko&display=swap');
+#logo {}
+
+body {
+    background-color: #ffffff;
+}
+
+#total-orders {
+    background-color: #4cb4c7;
+}
+
+#orders-delivered {
+    background-color: #7abecc;
+}
+
+#orders-pending {
+    background-color: #7CD1C0;
+}
+
+.logo-crm {
+    margin-left: 28px;
+    height: 45px;
+    width: 240px;
+}
+
+
+/* ---------for scroll bar-------- */
+
+ ::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.226);
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #919191;
+    transition: all 1s;
+    border-radius: 140px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: #646363;
+}
+
+
+/* -----------------------------------upper-side------------------------------- */
+
+.upper-side {
+    height: 150px;
+    background-color: #12192C;
+    padding: 0 0 0 0rem;
+}
+
+
+/* ------------------------------------side-menu------------------------------- */
+
+
+/* -------------variable css----------- */
+
+:root {
+    --nav-width: 92px;
+    /* -----------colors--------- */
+    --first-color: #0C5DF4;
+    --bg-color: #12192C;
+    --sub-color: #B6CEFC;
+    --white-color: #FFF;
+    /* ----Fuente y tripografia-- */
+    --body-font: 'poppins', sans-serif;
+    --normal-size: 1rem;
+    --small-font-size: .875rem;
+    /* ---------- z index-------- */
+    --z-fixed: 100;
+}
+
+
+/* ------------base---------- */
+
+*,
+::before,
+::after {
+    box-sizing: border-box;
+}
+
+body {
+    position: relative;
+    margin: 0;
+    padding: 0rem 0 0 5.75rem;
+    transition: .5s;
+}
+
+h1 {
+    margin: 0;
+}
+
+ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+a {
+    text-decoration: none;
+}
+
+
+/* -----------l-nav---------- */
+
+.l-navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: var(--nav-width);
+    height: 100vh;
+    background-color: var(--bg-color);
+    color: var(--white-color);
+    padding: 1.5rem 1.5rem 2rem;
+    transition: .5s;
+    z-index: var(--z-fixed);
+}
+
+
+/* ------------nav------------- */
+
+.nav {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+}
+
+.nav_brand {
+    display: grid;
+    grid-template-columns: max-content max-content;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.nav_toggle {
+    font-size: 1.25rem;
+    padding: .75rem;
+    cursor: pointer;
+}
+
+.nav_logo {
+    color: var(--white-color);
+    font-weight: 600;
+}
+
+.nav_link {
+    display: grid;
+    grid-template-columns: max-content max-content;
+    align-items: center;
+    column-gap: .75rem;
+    padding: .75rem;
+    color: var(--white-color);
+    border-radius: .5rem;
+    margin-bottom: 1rem;
+    transition: .3rem;
+    cursor: pointer;
+}
+
+.nav_link:hover {
+    background-color: var(--first-color);
+    color: white;
+}
+
+.nav_icon {
+    font-size: 1.5rem;
+}
+
+.nav_name {
+    font-size: var(--small-font-size);
+    font-weight: 600;
+}
+
+
+/* ---------Expander menu-------- */
+
+.expander {
+    width: calc(var(--nav-width)+12rem);
+}
+
+
+/* -----add padding body----- */
+
+.body-pd {
+    padding: 2rem 0 0 16rem;
+}
+
+
+/* -----------active--------- */
+
+.active {
+    background-color: var(--first-color);
+}
+
+
+/* ----------collapse---------- */
+
+.collapse {
+    grid-template-columns: 20px max-content 1fr;
+}
+
+.collapse_link {
+    justify-self: flex-end;
+    transition: .5;
+    font-size: 20px;
+}
+
+.collapse_menu {
+    display: none;
+    padding: .75rem 2.25rem;
+}
+
+.collapse_sublink {
+    color: var(--sub-color);
+    font-size: var(--small-font-size);
+    font-weight: 600;
+}
+
+.collapse_sublink:hover {
+    color: var(--white-color);
+}
+
+
+/* ---------show collapse------ */
+
+.showCollapse {
+    display: block;
+}
+
+
+/* -------rotate icon---------- */
+
+.rotate {
+    transform: rotate(180deg);
+    transition: .5s;
+}
+
+
+/* ----------------------------- design for lead_form.html----------------------- */
+
+.lead-form-card h4 {
+    font-family: teko;
+    text-align: center;
+    font-size: 53px;
+    margin-top: 10px;
+}
+
+.lead-form-card h3 {
+    color: #F9B901;
+    padding: 22px;
+}
+
+.lead-form-card {
+    box-shadow: 0px 0px 15px 1px black;
+}
+
+.input-box {
+    outline: none;
+    padding: 2px;
+    border: none;
+    width: 21%;
+    border-bottom: 2px solid #000000;
+    margin-bottom: 10px;
+    background: none;
+    color: #1f15a8;
+    font-size: 18px;
+    font-weight: 500;
+}

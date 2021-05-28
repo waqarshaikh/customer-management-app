@@ -1,12 +1,17 @@
-{% extends 'accounts/base.html' %}
-
-{% block content %}
-
-{% include 'accounts/status.html' %}
+{% extends 'accounts/base.html' %} {% block content %} {% include 'accounts/status.html' %}
 
 <br>
 
 <div class="row">
+
+    <!-- ----google charts---- -->
+    <div class="col-sm-6">
+        <div id="barchart_material" style="width: 700px; height: 400px;"></div>
+    </div>
+    <div class="col-sm-6">
+        <div id="piechart" style="width: 700px; height: 500px;"></div>
+    </div>
+
     <div class="col-md-5">
         <h5>EMPLOYEES: </h5>
         <hr>
@@ -18,11 +23,11 @@
                     <th>Phone</th>
                 </tr>
                 {% for employee in employees %}
-                    <tr>
-                        <td><a class="btn btn-primary btn-sm" href="{% url 'employee' employee.id %}">View</a></td>
-                        <td>{{ employee.name }}</td> 
-                        <td>{{ employee.phone }}</td> 
-                    </tr>
+                <tr>
+                    <td><a class="btn btn-primary btn-sm" href="{% url 'employee' employee.id %}">View</a></td>
+                    <td>{{ employee.name }}</td>
+                    <td>{{ employee.phone }}</td>
+                </tr>
                 {% endfor %}
             </table>
         </div>
@@ -41,17 +46,16 @@
                     <th>Remove</th>
                 </tr>
                 {% for order in last_five_orders %}
-                    <tr>
-                        <td>{{ order.product }}</td>
-                        <td>{{ order.date_created }}</td>
-                        <td>{{ order.status }}</td>
-                        <td><a href="{% url 'update_order' order.id %}" class="btn btn-primary btn-sm">Update</a></td>
-                        <td><a href="{% url 'delete_order' order.id %}" class="btn btn-danger btn-sm">Delete</a></td>
-                    </tr>
+                <tr>
+                    <td>{{ order.product }}</td>
+                    <td>{{ order.date_created }}</td>
+                    <td>{{ order.status }}</td>
+                    <td><a href="{% url 'update_order' order.id %}" class="btn btn-primary btn-sm">Update</a></td>
+                    <td><a href="{% url 'delete_order' order.id %}" class="btn btn-danger btn-sm">Delete</a></td>
+                </tr>
                 {% endfor %}
             </table>
         </div>
     </div>
-
 </div>
 {% endblock content %}
