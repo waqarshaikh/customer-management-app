@@ -25,6 +25,10 @@ urlpatterns = [
     path('delete_lead/<id>', views.delete_lead, name='delete_lead'),
     path('convert_lead/<id>', views.convert_lead, name='convert_lead'),
 
+    path('lead_detail/<id>', views.lead_detail_view, name='lead_detail'),
+
+    path('create_call/<id>', views.create_call, name='create_call'),
+
     path('opportunities/', views.opportunities, name='opportunities'),
     path('create_opportunity/', views.create_opportunity, name='create_opportunity'),
     path('update_opportunity/<id>', views.update_opportunity, name='update_opportunity'),
