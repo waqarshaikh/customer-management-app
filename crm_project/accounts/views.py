@@ -12,7 +12,7 @@ from django.core.mail import send_mail
 from django.conf import settings
 
 from .models import *
-from .forms import ContactForm, CustomerForm, EmailForm, LeadForm, OpportunityForm, OrderForm, CreateUserForm, EmployeeForm, ProductForm
+from .forms import CallForm, CompanyForm, ContactForm, CustomerForm, EmailForm, LeadForm, OpportunityForm, OrderForm, CreateUserForm, EmployeeForm, ProductForm
 from .filters import OrderFilter
 from .decorators import unauthenticated_user, allowed_users, admin_only
 
@@ -50,6 +50,19 @@ def employee(request, id):
     }
     return render(request, 'accounts/employee.html', context)
 
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
+def customer(request, id):
+    customer = Customer.objects.get(id=id)
+    orders = customer.order_set.all()
+    order_count = orders.count()
+    my_filter = OrderFilter(request.GET, queryset=orders)
+    orders = my_filter.qs
+    context = {
+        'employee': customer, 'orders': orders, 
+        'order_count': order_count, 'my_filter': my_filter
+    }
+    return render(request, 'accounts/customer.html', context)
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
@@ -244,6 +257,7 @@ def leads(request):
         leads = Lead.objects.all()
     else: 
         leads = request.user.employee.lead_set.all()
+    
     return render(request, 'accounts/leads.html', {'leads': leads})
 
 @login_required(login_url='login')
@@ -253,23 +267,28 @@ def create_lead(request):
     
     lead_form = LeadForm()
     contact_form = ContactForm()
+    company_form = CompanyForm()
 
     if request.method == 'POST':
         lead_form = LeadForm(request.POST)
         contact_form = ContactForm(request.POST)
+        company_form = CompanyForm(request.POST)
 
-        if lead_form.is_valid() and contact_form.is_valid():
+
+        if lead_form.is_valid() and contact_form.is_valid() and company_form.is_valid():
             lead = lead_form.save()
             contact = contact_form.save()
+            company = company_form.save()
 
             setattr(lead, 'contact', contact)
             lead.save()
+            setattr(lead, 'company', company)
+            lead.save()
             lead_form.save()
             
-
             return redirect('http://localhost:8000/leads/') 
 
-    context = {'lead_form': lead_form, 'contact_form': contact_form,}
+    context = {'lead_form': lead_form, 'contact_form': contact_form, 'company_form': company_form}
     return render(request, 'accounts/lead_form.html', context)
 
 @login_required(login_url='login')
@@ -278,16 +297,19 @@ def update_lead(request, id):
     lead = Lead.objects.get(id=id)
     lead_form = LeadForm(instance=lead)
     contact_form = ContactForm(instance=lead.contact)
+    company_form = CompanyForm(instance=lead.company)
 
     if request.method == 'POST':
         lead_form = LeadForm(request.POST, instance=lead)
         contact_form = ContactForm(request.POST, instance=lead.contact)
-        if lead_form.is_valid() and contact_form.is_valid():
+        company_form = CompanyForm(request.POST, instance=lead.company)
+        if lead_form.is_valid() and contact_form.is_valid() and company_form.is_valid():
             lead_form.save()
             contact_form.save()
+            company_form.save()
             return redirect('http://localhost:8000/leads/') 
     
-    context = {'lead_form': lead_form, 'contact_form': contact_form}
+    context = {'lead_form': lead_form, 'contact_form': contact_form, 'company_form': company_form}
     return render(request, 'accounts/lead_form.html', context)
 
 
@@ -386,10 +408,55 @@ def convert_opportunity(request, id):
     opportunity = Opportunity.objects.get(id=id)
     customer = Customer.objects.create(opportunity=opportunity, contact=opportunity.contact)
 
-    messages.success(request, request, f'Opportunity {opportunity} succesfully converted to Customer.')
+    messages.success(request, f'Opportunity {opportunity} succesfully converted to Customer.')
 
     return redirect('http://localhost:8000/customers/') 
 #-----------------Opportunity end----------------------------------------------
+#-----------------Call end----------------------------------------------
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['employee', 'admin'])
+def calls(request, id):
+    lead = Lead.objects.get(id=id)
+
+    if request.method == 'POST':
+        call_form = CallForm(request.POST)
+        if call_form.is_valid():
+            call = call_form.save()
+            setattr(lead, 'call', call)
+            lead.save()
+            return redirect('/') 
+    else:
+        call_form = CallForm()
+    context = {'call_form': call_form}
+    return render(request, 'accounts/call_form.html', context)
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['employee', 'admin'])
+def create_call(request, id):
+    lead = Lead.objects.get(id=id)
+
+    if request.method == 'POST':
+        call_form = CallForm(request.POST)
+        if call_form.is_valid():
+            call = call_form.save()
+            setattr(lead, 'call', call)
+            lead.save()
+            return redirect('/') 
+    else:
+        call_form = CallForm()
+    context = {'call_form': call_form}
+    return render(request, 'accounts/call_form.html', context)
+#-----------------Call end----------------------------------------------
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['employee', 'admin'])
+def lead_detail_view(request, id):
+    lead = Lead.objects.get(id=id)
+    
+    context = {
+        'lead': lead
+    }
+    return render(request, 'accounts/customer.html', context)
 
 @unauthenticated_user
 def register_page(request):
