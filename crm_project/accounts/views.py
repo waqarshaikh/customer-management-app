@@ -243,7 +243,7 @@ def create_lead(request):
             lead = lead_form.save()
             contact = contact_form.save()
 
-            setattr(lead, 'contact', contact)
+            setattr(lead, 'contact', contact)   
             lead.save()
             lead_form.save()
             
