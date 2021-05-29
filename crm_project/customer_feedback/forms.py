@@ -1,3 +1,4 @@
+from django import forms
 from accounts.models import Product, Employee
 from django.forms.widgets import CheckboxSelectMultiple
 from django.forms import ModelForm
@@ -14,6 +15,7 @@ class CustomerFeedbackForm(ModelForm):
 
         self.fields["product"].widget = CheckboxSelectMultiple()
         self.fields["product"].queryset = Product.objects.all()
+        self.fields["feedback"].widget = forms.Textarea(attrs={"rows":4,"cols":20})
 
 class InterstedCustomerForm(ModelForm):
     class Meta:
@@ -41,3 +43,4 @@ class CustomerComplaintForm(ModelForm):
 
         self.fields["employee"].widget = CheckboxSelectMultiple()
         self.fields["employee"].queryset = Employee.objects.all()
+        self.fields["message"].widget = forms.Textarea(attrs={"rows":4,"cols":20})

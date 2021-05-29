@@ -1,0 +1,47 @@
+{% extends 'accounts/base.html' %} {% load static %} {% load widget_tweaks %} {% block content %}
+<div class="container lead_form_container">
+    <div class="row d-flex justify-content-center">
+        <div class="col-md-12">
+            <h4>ADD LEAD</h4>
+            <hr>
+            <form action="" method="POST">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-sm-4">
+                        <h5>Contact Info</h5>
+                        <span style="margin-right: 20px; ">Name:</span> {% render_field contact_form.name class="input-box" %} <br>
+                        <span style="margin-right: 20px; ">Phone:</span> {% render_field contact_form.phone class="input-box" %} <br>
+                        <!-- {{contact_form.email.label}}: {% render_field contact_form.email class="input-box" %} <br> -->
+                        <span style="margin-right: 25px; ">Email:</span> {{ contact_form.email | add_class:"input-box" }} <br>
+
+                        <!-- {{ contact_form.as_p }} -->
+
+                    </div>
+
+                    <div class="col-sm-4">
+                        <!-- ----------------------lead form--------------------- -->
+                        <h5>Lead Info</h5>
+                        <!-- {{ lead_form.as_p }} -->
+                        <span style="margin-right: 52px; ">Call: </span>{% render_field lead_form.call class="input-box" %} <br>
+                        <span style="margin-right: 30px; ">Source: </span>{% render_field lead_form.source class="input-box" %} <br>
+                        <span style="margin-right: 10px; ">Employee: </span>{% render_field lead_form.employee class="input-box" %} <br>
+                        <span style="margin-right: 37px; ">Status: </span>{% render_field lead_form.status class="input-box" %} <br>
+                        <span style="margin-right: 10px; ">Comment: </span>{% render_field lead_form.comment class="input-box" %} <br>
+                    </div>
+                    <div class="col-sm-4">
+                        <h5>Company Info</h5>
+                        <!-- {{ company_form.as_p }} -->
+                        <span style="margin-right: 25px; ">Name: </span>{% render_field company_form.name class="input-box" %} <br>
+                        <span style="margin-right: 25px; ">Phone: </span>{% render_field company_form.phone class="input-box" %} <br>
+                        <span style="margin-right: 33px; ">Email: </span>{% render_field company_form.email class="input-box" %} <br>
+                        <span style="margin-right: 17px; ">Address: </span>{% render_field company_form.address class="input-box" %} <br>
+                        <span style="margin-right: 19px; ">Website: </span>{% render_field company_form.website class="input-box" %} <br>
+                        <span style="margin-right: 20px; ">Profile Pic: </span>{% render_field company_form.profile_pic %} <br>
+                        <input class='btn-primary-crm' type="submit" value="Submit" style="    margin-left: 86px; margin-top: 16px;">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}

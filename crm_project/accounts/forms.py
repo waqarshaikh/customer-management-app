@@ -9,7 +9,7 @@ from .models import Call, Company, Contact, Customer, Employee, Lead, Opportunit
 
 class EmployeeForm(ModelForm):
     class Meta:
-        model = Employee
+        model = Employee    
         fields = '__all__'
         exclude = ['user']
 

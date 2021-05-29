@@ -1,5 +1,8 @@
 from django.db import models
+from django.db.models.fields import TextField
 from accounts.models import Product, Employee
+from django import forms
+
 
 class CustomerFeedback(models.Model):
     stars = (
