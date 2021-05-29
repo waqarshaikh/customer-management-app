@@ -1,3 +1,4 @@
+from .serializers import LeadSerializer
 from typing import DefaultDict
 from customer_feedback.models import CustomerFeedback, IntrestedCustomer, CustomerComplaint
 from django.conf.urls import url
@@ -15,6 +16,9 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.image import MIMEImage
 from django.conf import settings
+
+from rest_framework import viewsets
+
 
 from .models import *
 from .forms import CallForm, CompanyForm, ContactForm, CustomerForm, EmailForm, LeadForm, OpportunityForm, OrderForm, CreateUserForm, EmployeeForm, ProductForm
@@ -256,14 +260,28 @@ def delete_order(request, id):
 
 #-----------------Lead start----------------------------------------------
 @login_required(login_url='login')
-@allowed_users(allowed_roles=['admin', 'employee'])
-def leads(request):
-    if request.user.is_staff:
-        leads = Lead.objects.all()
-    else: 
-        leads = request.user.employee.lead_set.all()
+@allowed_users(allowed_roles=['employee', 'admin'])
+def index(request):
+    return render(request, 'accounts/leads.html')
+
+class LeadViewSet(viewsets.ModelViewSet):
+    serializer_class = LeadSerializer
+
+    def get_queryset(self):
+        if self.request.user.is_staff:
+            leads = Lead.objects.all()
+        else: 
+            leads = self.request.user.employee.lead_set.all()
+        return leads
+# @login_required(login_url='login')
+# @allowed_users(allowed_roles=['admin', 'employee'])
+# def leads(request):
+#     if request.user.is_staff:
+#         leads = Lead.objects.all()
+#     else: 
+#         leads = request.user.employee.lead_set.all()
     
-    return render(request, 'accounts/leads.html', {'leads': leads})
+#     return render(request, 'accounts/leads.html', {'leads': leads})
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
@@ -519,7 +537,7 @@ def send_email(request, id):
             message = request.POST.get('message')
             subject = request.POST.get('subject')
             from_email = settings.EMAIL_HOST_USER
-            to_email = "shaikhwaqar1999@gmail.com"
+            to_email = "mailmerairishabh99@gmail.com"
             
             img_data =  open('D:\Web\Django\customer-management-app\crm_project\static\images\photo.jpg', 'rb').read()
 
