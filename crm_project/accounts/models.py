@@ -1,3 +1,4 @@
+from django import forms
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.base import ModelState
@@ -143,3 +144,11 @@ class Customer(models.Model):
 
     def __str__(self):
         return str(self.contact.name)
+
+class Email(models.Model):
+    subject = models.CharField(max_length=255, null=True)
+    img = models.ImageField(null=True, blank=True, default='default-profile-pic.jpg')
+    message = models.TextField(max_length=255, null=True) 
+
+    def __str__(self):
+        return str(self.subject)

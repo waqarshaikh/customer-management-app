@@ -9,7 +9,8 @@
             <h3>Send Email</h3>
             <form action="" method="POST">
                 {% csrf_token %} 
-                {{ form.as_p }}                        
+                {{ form.as_p }}
+                {{ form.errors }}                        
                 <input class='btn btn-primary' type="submit" value="Submit">
             </form>
         </div>
