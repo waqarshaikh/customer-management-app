@@ -1,47 +1,124 @@
-{% extends 'accounts/base.html' %}
+{% load static %} {% load widget_tweaks %}
+<!DOCTYPE html>
+<html lang="en">
 
-{% block content %}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<div class="row">
-    <div class="col-md-6">
-        <div class="card card-body">
-            <h1>Customer Feedback</h1>
-            <hr>
-            <form action="customer_feedback/" method="POST">
-                {% csrf_token %}
-                {{ customer_feedback_form.as_p }}
-                <input class='btn btn-primary' type="submit" value="Submit">
-            </form>
-        </div>
-    </div>
-</div>
-<hr>
-<div class="row">
-    <div class="col-md-6">
-        <div class="card card-body">
-            <h1>Intrested Customer</h1>
-            <hr>
-            <form action="intrested_customer/" method="POST">
-                {% csrf_token %}
-                {{ intrested_customer_form.as_p }}
-                <input class='btn btn-primary' type="submit" value="Submit">
-            </form>
-        </div>
-    </div>
-</div>
-<hr>
-<div class="row">
-    <div class="col-md-6">
-        <div class="card card-body">
-            <h1>Customer Complaint</h1>
-            <hr>
-            <form action="customer_complaint/" method="POST">
-                {% csrf_token %}
-                {{ customer_complaint_form.as_p }}
-                <input class='btn btn-primary' type="submit" value="Submit">
-            </form>
-        </div>
-    </div>
-</div>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
+    <title>Document</title>
+    <!-- css -->
+    <link rel="stylesheet" type="text/css" href="{% static '/css/customer_feedback5.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static '/css/utility.css' %}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</head>
 
-{% endblock content %}
+<body>
+    <nav class="navbar navbar-expand-lg sticky-top" style="background-color:#252f51!important;;">
+        <!-- <a class="navbar-brand" href="#">Navbar</a> -->
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse d-flex justify-content-center" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Feedback</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#interest">Interested In</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#complaint">Complain</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+
+    <!--  -----------------------this is feedback section----------------------------- -->
+
+    <div class="container-fluid container-feedback">
+        <div class="row" id="feedback">
+            <div class="col-sm-6">
+                <img src="{% static 'images/feedback.gif'%}" class="feedback_banner" alt="user-img">
+                <!-- <video class="d-block w-100 feedback_banner" autoplay loop muted>
+                    <source src="{% static "images/feedback.mp4" %}" type="video/mp4" />
+                  </video> -->
+            </div>
+            <div class="col-md-6">
+                <div class="card card-body" style="margin: 50px; padding-left: 80px; border: 7px solid #E4AA05;">
+                    <h1 id="feedback-heading">Customer Feedback</h1>
+                    <!-- <hr> -->
+                    <form action="customer_feedback/" method="POST">
+                        {% csrf_token %}
+                        <!-- {{ customer_feedback_form.as_p }} -->
+                        <span style="margin-right: 23px;">Name: </span>{% render_field customer_feedback_form.name class="input-box" %} <br>
+                        <span style="margin-right: 26px;">Email: </span>{% render_field customer_feedback_form.email class="input-box" %}<br>
+                        <span style="margin-right: 20px;">Phone: </span>{% render_field customer_feedback_form.phone class="input-box" %}<br>
+                        <span>Product: </span>{% render_field customer_feedback_product.product class="input-box" %}<br>
+                        <span>Feedback: </span>{% render_field customer_feedback_form.feedback class="input-box" %} <br>
+                        <span style="margin-right: 36px;">Rate: </span>{% render_field customer_feedback_form.rate class="input-box" %} <br>
+                        <input class='btn-primary-crm' type="submit" value="Submit" style="margin: 20px 75px">
+                    </form>
+                </div>
+            </div>
+        </div>
+        <hr>
+
+        <!-- ---------------------------this is intrest section------------------------  -->
+        <div class="row" style="padding-top: 50px;" id="interest">
+            <div class="col-md-6">
+                <div class="card card-body" style="border: 7px solid #E4AA05; height: 500px; padding-left: 100px; margin-left: 50px; margin-top: 100px; margin-bottom: 70px;">
+                    <h1 id="interest-heading">Intrested Customer</h1>
+                    <form action="intrested_customer/" method="POST">
+                        {% csrf_token %}
+                        <!-- {{ customer_complaint_form.as_p }} -->
+                        <span style="margin-right: 23px;">Name: </span>{% render_field customer_complaint_form.name class="input-box" %} <br>
+                        <span style="margin-right: 26px;">Email: </span>{% render_field customer_complaint_form.email class="input-box" %}<br>
+                        <span style="margin-right: 20px;">Phone: </span>{% render_field customer_complaint_form.phone class="input-box" %}<br>
+                        <span>Product: </span>{% render_field customer_complaint_form.product %}<br>
+                        <input class='btn-primary-crm' type="submit" value="Submit" style="margin: 20px 75px">
+                    </form>
+                </div>
+            </div>
+
+            <div class="col-sm-6">
+                <img src="{% static 'images/interest.gif'%}" class="feedback_banner" alt="user-img">
+                <!-- <video class="d-block w-100 feedback_banner" autoplay loop muted>
+                    <source src="{% static "images/interest.mp4" %}" type="video/mp4" />
+                  </video> -->
+            </div>
+        </div>
+        <hr>
+
+        <!-- --------------------------Complaint section start from here--------------------------- -->
+
+        <div class="row" id="complaint">
+            <div class="col-sm-6">
+                <img src="{% static 'images/complaint.gif'%}" class="complaint_banner" alt="user-img">
+                <!-- <video class="d-block w-100 feedback_banner" autoplay loop muted>
+                    <source src="{% static "images/feedback.mp4" %}" type="video/mp4" />
+                  </video> -->
+            </div>
+            <div class="col-md-6">
+                <div class="card card-body" style="border: 7px solid #E4AA05; margin: 50px; padding-left: 80px;">
+                    <h1 id="complaint_heading">Customer Complaint</h1>
+                    <form action=" customer_complaint/ " method="POST ">
+                        {% csrf_token %}
+                        <!-- {{ customer_complaint_form.as_p }} -->
+                        <span style="margin-right: 23px; ">Name: </span>{% render_field customer_complaint_form.name class="input-box " %} <br>
+                        <span style="margin-right: 26px; ">Email: </span>{% render_field customer_complaint_form.email class="input-box " %}<br>
+                        <span style="margin-right: 20px; ">Phone: </span>{% render_field customer_complaint_form.phone class="input-box " %}<br>
+                        <span>Product: </span>{% render_field customer_complaint_form.product %}<br>
+                        <span>Employee: </span>{% render_field customer_complaint_form.employee %}<br>
+                        <span style="margin-right: 5px; ">Message: </span>{% render_field customer_complaint_form.message class="input-box " %} <br>
+                        <input class='btn-primary-crm' type="submit" value="Submit" style="margin: 20px 75px">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -121,6 +121,7 @@ a {
     padding: 1.5rem 1.5rem 2rem;
     transition: .5s;
     z-index: var(--z-fixed);
+    border-right: 6px solid #E4AA05;
 }
 
 
@@ -132,6 +133,7 @@ a {
     flex-direction: column;
     justify-content: space-between;
     overflow: hidden;
+    margin-left: -6px;
 }
 
 .nav_brand {
@@ -265,13 +267,37 @@ a {
 
 .input-box {
     outline: none;
-    padding: 2px;
-    border: none;
-    width: 21%;
-    border-bottom: 2px solid #000000;
+    padding: 3px;
+    border-radius: 17px;
+    width: 65%;
+    border: 3px solid #66d3bd;
     margin-bottom: 10px;
     background: none;
-    color: #1f15a8;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    padding-right: 16px;
+    padding-left: 16px;
+    color: #050505;
     font-size: 18px;
-    font-weight: 500;
+    /* font-weight: 500; */
+    margin-top: 5px;
+}
+
+.lead_form_container span {
+    margin-right: 20px;
+    font-size: 16px;
+    font-weight: 600;
+    color: black;
+}
+
+.lead_form_container h5 {
+    font-weight: 700;
+    text-align: center;
+}
+
+.lead_form_container h4 {
+    font-size: 30px;
+    margin-top: -23px;
+    text-align: center;
+    color: #ff9716;
 }
