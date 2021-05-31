@@ -1,7 +1,12 @@
+from django.urls.conf import include
 from django.contrib import admin
 from django.urls import path
 from . import views
 from django.contrib.auth import views as auth_views
+from rest_framework import routers
+
+router = routers.DefaultRouter()
+router.register(r'leads', views.LeadViewSet, basename='lead')
 
 urlpatterns = [
     path('', views.home, name='home'),
@@ -19,7 +24,10 @@ urlpatterns = [
     path('update_order/<id>', views.update_order, name='update_order'),
     path('delete_order/<id>', views.delete_order, name='delete_order'),
 
-    path('leads/', views.leads, name='leads'),
+    path('leads/api/', include(router.urls)),
+    path('leads/', views.index, name='leads'),
+
+    # path('leads/', views.leads, name='leads'),
     path('create_lead/', views.create_lead, name='create_lead'),
     path('update_lead/<id>', views.update_lead, name='update_lead'),
     path('delete_lead/<id>', views.delete_lead, name='delete_lead'),
