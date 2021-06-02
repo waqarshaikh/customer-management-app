@@ -1,41 +1,55 @@
 {% extends 'accounts/base.html' %}
-
+{% load static %}
 {% block head %}
-<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/css/bootstrap.css">
-<link rel="stylesheet" href="//cdn.datatables.net/1.10.16/css/dataTables.bootstrap4.min.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous">
 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.24/css/dataTables.bootstrap4.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.7.0/css/buttons.bootstrap4.min.css">
+<link rel="stylesheet" type="text/css" href="{% static '/css/login3.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static '/css/utility.css' %}">
 {% endblock head %}
 
 {% block content %}
-<a class="btn btn-primary mb-3" href="{% url 'create_lead' %}">Add Lead</a>
 
-<div class="row">
-    <div class="col-md">
-        <div class="card card-body">
-            <h5>Leads</h5>
-            <hr>
-             
+<div class="container">
+        {% for message in messages %}
+            <p id='messages'><i class="fas fa-check-circle" style="font-size:24px;color:green"></i> {{ message }}</p>
+        {% endfor %}
+    <div class="row">
+        <div class="col-md">
+            <div class="card card-body">
+                <div class="card text-white bg-dark mb-3" style="max-width: 100rem;">
+                    <div class="card-body" style="text-align: center; padding-bottom: 0px;">
+                        <h4>LEADS
+                            <div style="float: right;">
+                                <a class="btn btn-primary mb-3" href="{% url 'create_lead' %}">Add Lead</a>
+                                {% comment %} <a class="btn btn-primary" href="{% url 'import-buyer' %}">ADD BULK BUYER</a> {% endcomment %}
+                            </div>
+                        </h4>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <table id="leads" class="table table-striped table-bordered" style="width:100%" data-server-side="true"
+                            data-ajax="api/leads/?format=datatables">
+                            <thead>
+                                <tr>
+                                    <th>Sr No</th>
+                                    <th>Lead Name</th>
+                                    <th>Assigned To</th>
+                                    <th>Source</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div> 
+                
+            </div>
         </div>
     </div>
-</div>
-<div class="container">
-    <div class="row">
-        <div class="col-sm-12">
-            <table id="leads" class="table table-striped table-bordered" style="width:100%" data-server-side="true"
-                data-ajax="api/leads/?format=datatables">
-                <thead>
-                    <tr>
-                        <th>Sr No</th>
-                        <th>Lead Name</th>
-                        <th>Assigned To</th>
-                        <th>Source</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-            </table>
-        </div>
-    </div> 
 </div>
 
 <script src="//code.jquery.com/jquery-1.12.4.js"></script>
@@ -59,24 +73,6 @@
             buttons: [
                 {
                     extend: 'excelHtml5',
-                    title: 'All Products Details',
-                    text:'Excel',
-                    exportOptions: {
-                     columns: [0, 1, 2, 3, 4, 5, 6, 8]
-                    }
-                },
-                {
-                    extend: 'pdfHtml5',
-                    title: 'All Products Details',
-                    text: 'PDF',
-                    exportOptions: {
-                        columns: [0, 1, 2, 3, 4, 5, 6, 8]
-                       }
-                }
-            ],
-            buttons: [
-                {
-                    extend: 'excelHtml5',
                     title: 'All Leads Details',
                     text:'Excel',
                     exportOptions: {
@@ -94,16 +90,17 @@
             ],
             columns: [
                 { data: 'id' },
-                { data: 'contact', name: 'contact.name' },
+                { data: 'company', name: 'company.company_name' },
                 { data: 'employee', name: 'employee.name' },
                 { data: 'source' },
                 { data: 'status' },
                 {
                     data: 'id',
                     render: function (data, type, row) {
-                        let edit_button = `<a href="/update_lead/${data}" class="btn btn-primary btn-sm">Update</a>`;
+                        let convert_button = `<a href="/convert_lead/${data}" class="btn btn-info btn-sm">Convert</a>`;
+                        let edit_button = ` <a href="/update_lead/${data}" class="btn btn-primary btn-sm">Update</a>`;
                         let delete_button = ` <a href="/delete_lead/${data}" class="btn btn-danger btn-sm">Delete</a>`;
-                        return edit_button + delete_button;
+                        return convert_button + edit_button + delete_button;
                     }
                 }
             ]

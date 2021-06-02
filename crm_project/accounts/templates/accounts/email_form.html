@@ -1,17 +1,19 @@
-{% extends 'accounts/base.html' %}
+{% extends 'accounts/base.html' %}{% load widget_tweaks %}
 {% load static %}
 
 {% block content %}
 
-<div class="row">
-    <div class="col-md-6">
-        <div class="card card-body">
-            <h3>Send Email</h3>
+<div class="row d-flex justify-content-center">
+    <div class="col-md-8">
+        <div class="card card-body" style="box-shadow: 0px 0px 15px 0px skyblue">
+            <h3 style="text-align: center; margin-bottom: 36px; margin-top: 25px;">Send Email</h3>
             <form action="" method="POST">
                 {% csrf_token %} 
-                {{ form.as_p }}
+                {% comment %} {{ form.as_p }} {% endcomment %}
+                <span style="margin-right: 30px; margin-left: 110px;">Subject: </span>{% render_field form.subject class="input-box-email" %} <br>
+                <span style="margin-right: 30px; margin-left: 101px;">Message: </span>{% render_field form.message class="input-box-email" %} <br>
                 {{ form.errors }}                        
-                <input class='btn btn-primary' type="submit" value="Submit">
+                <input class='btn btn-primary btn-primary-crm' style="margin-left: 413px; margin-top: 35px;" type="submit" value="Submit">
             </form>
         </div>
     </div>

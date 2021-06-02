@@ -27,7 +27,9 @@ urlpatterns = [
     path('leads/api/', include(router.urls)),
     path('leads/', views.index, name='leads'),
 
-    # path('leads/', views.leads, name='leads'),
+    path('users/', views.users, name='users'),
+    path('add_employee/<id>', views.add_employee, name='add-employee'),
+    
     path('create_lead/', views.create_lead, name='create_lead'),
     path('update_lead/<id>', views.update_lead, name='update_lead'),
     path('delete_lead/<id>', views.delete_lead, name='delete_lead'),
