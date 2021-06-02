@@ -27,10 +27,10 @@ class LeadForm(ModelForm):
     class Meta:
         model = Lead
         fields = '__all__'
-        exclude = ['contact', 'company']
+        exclude = ['contact', 'company', 'call']
 
-    def __init__(self, *args, **kwargs):
-        self.fields["comment"].widget = forms.Textarea(attrs={"rows":4,"cols":20})
+    # def __init__(self, *args, **kwargs):
+    #     self.fields["comment"].widget = forms.Textarea(attrs={"rows":4,"cols":20})
 
 class OpportunityForm(ModelForm):
     class Meta:
@@ -47,8 +47,10 @@ class CompanyForm(ModelForm):
         model = Company
         fields = '__all__'
         
-    def __init__(self, *args, **kwargs):
-        self.fields["address"].widget = forms.Textarea(attrs={"rows":4,"cols":20})
+        exclude = ['profile_pic', ]
+
+    # def __init__(self, *args, **kwargs):
+    #     self.fields["address"].widget = forms.Textarea(attrs={"rows":4,"cols":20})
 
 class CallForm(ModelForm):
     class Meta:
@@ -75,4 +77,4 @@ class CreateUserForm(UserCreationForm):
 class EmailForm(ModelForm):
     class Meta:
         model = Email
-        fields = '__all__'
+        fields = ['subject', 'message']
