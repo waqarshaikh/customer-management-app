@@ -36,11 +36,16 @@ urlpatterns = [
     path('convert_lead/<id>', views.convert_lead, name='convert_lead'),
 
     path('lead_detail/<id>', views.lead_detail_view, name='lead_detail'),
+
     path('lead_detail/<id>/calls/', views.calls, name='calls'),
     path('lead_detail/<id>/calls/update/<call_id>/', views.update_call, name='update-call'),
     path('lead_detail/<id>/calls/delete/<call_id>/', views.delete_call, name='delete-call'),
-
     path('lead_detail/<id>/calls/add/', views.create_call, name='create_call'),
+
+    path('lead_detail/<id>/contacts/', views.contacts, name='contacts'),
+    path('lead_detail/<id>/contacts/update/<contact_id>/', views.update_contact, name='update-contact'),
+    path('lead_detail/<id>/contacts/delete/<contact_id>/', views.delete_contact, name='delete-contact'),
+    path('lead_detail/<id>/contacts/add/', views.create_contact, name='create_contact'),
 
     path('opportunities/', views.opportunities, name='opportunities'),
     path('create_opportunity/', views.create_opportunity, name='create_opportunity'),

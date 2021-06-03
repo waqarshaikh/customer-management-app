@@ -50,15 +50,6 @@ class Order(models.Model):
     def __str__(self):
         return self.product.name
 
-class Contact(models.Model):
-    name = models.CharField(max_length=255, null=True)
-    phone = models.CharField(max_length=15, null=True)
-    email = models.EmailField(max_length=255, null=True)
-    designation = models.CharField(max_length=255, null=True)
-    date_created = models.DateTimeField(auto_now_add=True, null=True)
-    
-    def __str__(self):
-        return self.name
 
 
 
@@ -100,7 +91,7 @@ class Lead(models.Model):
         ('Closed', 'Closed'),
         ('Others', 'Others'),
     )
-    contact = models.ForeignKey(Contact, null=True, on_delete=models.CASCADE)
+    # contact = models.ForeignKey(Contact, null=True, on_delete=models.CASCADE)
     company = models.ForeignKey(Company, null=True, on_delete=models.CASCADE)
     source = models.CharField(max_length=20, null=True,  choices=SOURCES)
     employee = models.ForeignKey(Employee, null=True, on_delete=models.CASCADE, verbose_name='Assigned To')
@@ -115,6 +106,24 @@ class Lead(models.Model):
 
     def __str__(self):
         return self.company.company_name
+
+class Contact(models.Model):
+    name = models.CharField(max_length=255, null=True)
+    phone = models.CharField(max_length=15, null=True)
+    email = models.EmailField(max_length=255, null=True)
+    designation = models.CharField(max_length=255, null=True)
+    date_created = models.DateTimeField(auto_now_add=True, null=True)
+    lead = models.ForeignKey(Lead, null=True, on_delete=models.SET_NULL)
+
+    class Meta:
+        verbose_name_plural = 'contacts'
+    
+    def class_name(self):
+        return self._meta.model_name
+    
+    def __str__(self):
+        return self.name
+
 
 class Opportunity(models.Model):
     contact = models.ForeignKey(Contact, null=True, on_delete=models.CASCADE)

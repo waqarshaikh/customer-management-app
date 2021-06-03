@@ -6,7 +6,7 @@
     <div class="col-md-6">
         <div class="card card-body">
             <p>Are you sure you want to delete {{data.class_name}} {{ data }} ?</p>
-            {% if data.class_name == "call" %}
+            {% if data.class_name == "call" or data.class_name == "contact" %}
             <form action="{{delete}}" method="POST">
                 {% csrf_token %}
                 <a href="{{reverse}}" class="btn btn-sm">Cancel</a>

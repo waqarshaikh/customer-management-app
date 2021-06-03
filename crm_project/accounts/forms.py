@@ -41,6 +41,7 @@ class ContactForm(ModelForm):
     class Meta:
         model = Contact
         fields = '__all__'
+        exclude = ['lead']
 
 class CompanyForm(ModelForm):
     class Meta:

@@ -356,13 +356,18 @@ def create_lead(request):
         company_form = CompanyForm(request.POST)
 
         print('Pre save')
+        print(lead_form.errors)
+        print(contact_form.errors)
+        print(company_form.errors)
         if lead_form.is_valid() and contact_form.is_valid() and company_form.is_valid():
             lead = lead_form.save()
+            print('lead save')
             company = company_form.save()
-            contact = contact_form.save()
-            print('post save')
+            print('company save')
+            contact = contact_form.save(commit=False)
             setattr(lead, 'company', company)
-            setattr(lead, 'contact', contact)   
+            contact.lead = lead
+            contact_form.save() 
             lead.save()
             lead_form.save()
             
@@ -375,15 +380,15 @@ def create_lead(request):
 @allowed_users(allowed_roles=['employee', 'admin'])
 def update_lead(request, id):
     lead = Lead.objects.get(id=id)
-   
+    
     lead_form = LeadForm(instance=lead)
     print(lead.company)
     company_form = CompanyForm(instance=lead.company)
-    contact_form = ContactForm(instance=lead.contact)
+    contact_form = ContactForm(instance=lead.contact_set.all().first())
 
     if request.method == 'POST':
         lead_form = LeadForm(request.POST, instance=lead)
-        contact_form = ContactForm(request.POST, instance=lead.contact)
+        contact_form = ContactForm(request.POST, instance=lead.contact_set.all().first())
         company_form = CompanyForm(request.POST, instance=lead.company)
         print("pre save")
         if lead_form.is_valid() and contact_form.is_valid() and company_form.is_valid():
@@ -538,8 +543,8 @@ def update_call(request, id, call_id):
             form.save()
             return redirect(f'http://localhost:8000/lead_detail/{id}/calls/') 
     
-    context = {'form': form}
-    return render(request, 'accounts/opportunity_form.html', context)
+    context = {'call_form': form}
+    return render(request, 'accounts/call_form.html', context)
 
 
 @login_required(login_url='login')
@@ -554,6 +559,64 @@ def delete_call(request, id, call_id):
     context = {'data': call,'delete': f'/lead_detail/{id}/calls/delete/{call_id}/', 'reverse': f'/lead_detail/{id}/calls/'}
     return render(request, 'accounts/delete.html', context)
 #-----------------Call end----------------------------------------------
+
+#-----------------Contact end----------------------------------------------
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['employee', 'admin'])
+def contacts(request, id):
+    lead = Lead.objects.get(id=id)
+    contacts = lead.contact_set.all()
+
+    context = {'contacts': contacts, 'lead':lead}
+    return render(request, 'accounts/contacts.html', context)
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['employee', 'admin'])
+def create_contact(request, id):
+    lead = Lead.objects.get(id=id)
+    
+    if request.method == 'POST':
+        contact_form = ContactForm(request.POST)
+
+        if contact_form.is_valid():
+            contact = contact_form.save(commit=False)
+            contact.lead = lead
+            contact_form.save()
+            messages.success(request, "Succesfully added contact")
+            return redirect(f'/lead_detail/{id}/contacts') 
+    else:
+        contact_form = ContactForm()
+    context = {'contact_form': contact_form}
+    return render(request, 'accounts/contact_form.html', context)
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['employee', 'admin'])
+def update_contact(request, id, contact_id):
+    contact = Contact.objects.get(id=contact_id)
+    form = ContactForm(instance=contact)
+
+    if request.method == 'POST':
+        form = ContactForm(request.POST, instance=contact)
+        if form.is_valid():
+            form.save()
+            return redirect(f'http://localhost:8000/lead_detail/{id}/contacts/') 
+    
+    context = {'contact_form': form}
+    return render(request, 'accounts/contact_form.html', context)
+
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['employee', 'admin'])
+def delete_contact(request, id, contact_id):
+    contact = Contact.objects.get(id=contact_id)
+
+    if request.method == 'POST':
+        contact.delete()
+        return redirect(f'http://localhost:8000/lead_detail/{id}/contacts/')
+        
+    context = {'data': contact,'delete': f'/lead_detail/{id}/contacts/delete/{contact_id}/', 'reverse': f'/lead_detail/{id}/contacts/'}
+    return render(request, 'accounts/delete.html', context)
+#-----------------Contact end----------------------------------------------
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['employee', 'admin'])
