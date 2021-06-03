@@ -60,35 +60,7 @@ class Contact(models.Model):
     def __str__(self):
         return self.name
 
-class Call(models.Model):
-    CALL_TYPES = (
-        ("Call", "Call"),
-        ("Conference", "Conference"),
-        ("Skype", "Skype"),
-        ("WhatsApp", "WhatsApp"),
-    )
 
-    FLAGS = (
-        ("No Answer", "No Answer"),
-        ("Important", "Important"),
-        ("Busy", "Busy"),
-        ("Urgent", "Urgent"),
-        ("Left message", "Left message"),
-        ("Reschedule", "Reschedule"),
-    )
-    date = models.DateTimeField(null=True)
-    call_type = models.CharField(max_length=255, null=True,  choices=CALL_TYPES)
-    flag = models.CharField(max_length=255, null=True,  choices=FLAGS)
-    description = models.TextField(max_length=255, null=True, blank=True)
-    
-    class Meta:
-        verbose_name_plural = 'calls'
-    
-    def class_name(self):
-        return self._meta.model_name
-
-    def __str__(self):
-        return self.call_type
 
 
 class Company(models.Model):
@@ -130,7 +102,6 @@ class Lead(models.Model):
     )
     contact = models.ForeignKey(Contact, null=True, on_delete=models.CASCADE)
     company = models.ForeignKey(Company, null=True, on_delete=models.CASCADE)
-    call = models.ForeignKey(Call, null=True, on_delete=models.CASCADE)
     source = models.CharField(max_length=20, null=True,  choices=SOURCES)
     employee = models.ForeignKey(Employee, null=True, on_delete=models.CASCADE, verbose_name='Assigned To')
     status = models.CharField(max_length=200, null=True, choices=STATUS)
@@ -143,7 +114,7 @@ class Lead(models.Model):
         return self._meta.model_name
 
     def __str__(self):
-        return self.company.name
+        return self.company.company_name
 
 class Opportunity(models.Model):
     contact = models.ForeignKey(Contact, null=True, on_delete=models.CASCADE)
@@ -179,3 +150,35 @@ class Email(models.Model):
 
     def __str__(self):
         return str(self.subject)
+
+
+class Call(models.Model):
+    CALL_TYPES = (
+        ("Call", "Call"),
+        ("Conference", "Conference"),
+        ("Skype", "Skype"),
+        ("WhatsApp", "WhatsApp"),
+    )
+
+    FLAGS = (
+        ("No Answer", "No Answer"),
+        ("Important", "Important"),
+        ("Busy", "Busy"),
+        ("Urgent", "Urgent"),
+        ("Left message", "Left message"),
+        ("Reschedule", "Reschedule"),
+    )
+    lead = models.ForeignKey(Lead, null=True, on_delete=models.CASCADE)
+    date = models.DateTimeField(null=True)
+    call_type = models.CharField(max_length=255, null=True,  choices=CALL_TYPES)
+    flag = models.CharField(max_length=255, null=True,  choices=FLAGS)
+    description = models.TextField(max_length=255, null=True, blank=True)
+    
+    class Meta:
+        verbose_name_plural = 'calls'
+    
+    def class_name(self):
+        return self._meta.model_name
+
+    def __str__(self):
+        return f"{self.call_type} on {self.date}"
