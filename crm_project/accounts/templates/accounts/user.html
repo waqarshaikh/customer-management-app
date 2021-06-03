@@ -7,18 +7,20 @@
 
 <div class="row">
     <div class="col-md">
+        <h5>RECENT 5 CUSTOMERS</h5>
+        <hr>
         <div class="card card-body">
             <table class="table table-sm">
                 <tr>
-                    <th>Product</th>
-                    <th>Date ordered</th>
+                    <th>Name</th>
+                    <th>Source</th>
                     <th>Status</th>
                 </tr>
-                {% for order in orders %}
+                {% for customer in customers %}
                 <tr>
-                    <td> {{ order.product }}</td>
-                    <td> {{ order.date_created }} </td>
-                    <td> {{ order.status }} </td>
+                    <td> {{ customer.contact.name }} </td>
+                    <td> {{ customer.opportunity.lead.source }}</td>
+                    <td> {{ customer.opportunity.lead.status }} </td>
                 </tr>
                 {% endfor %}
             </table>

@@ -16,6 +16,12 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.image import MIMEImage
 from django.conf import settings
+from django.utils.datastructures import MultiValueDictKeyError
+
+
+from pyexcel_xls import get_data as get_xls_data
+from pyexcel_xlsx import get_data as get_xlsx_data
+from rest_framework.views import APIView
 
 from rest_framework import viewsets
 
@@ -30,8 +36,11 @@ from .decorators import unauthenticated_user, allowed_users, admin_only
 @admin_only
 def home(request):
     print(request.user)
+    leads = Lead.objects.all()
+    opportunities = Opportunity.objects.all()
+    customers = Customer.objects.all()
     orders = Order.objects.all()
-    employees = Employee.objects.all()
+    employees = User.objects.filter(groups__name='employee')
     total_employees = employees.count()
     total_orders = orders.count()
     delivered = orders.filter(status='Delivered').count()
@@ -40,10 +49,57 @@ def home(request):
 
     context = {'orders': orders, 'employees': employees, 
         'total_orders': total_orders, 'total_employees': total_employees,
-        'delivered': delivered, 'pending': pending, 'last_five_orders': last_five_orders
+        'delivered': delivered, 'pending': pending, 'last_five_orders': last_five_orders,
+        'total_leads': leads.count(), 'total_opportunities': opportunities.count(), 'total_customers': customers.count(),
     }
     return render(request, 'accounts/dashboard.html', context)
 
+# class ParseExcel(APIView):
+#     def post(self, request, format=None):
+#         import_url = 'http://localhost:8000/import/'
+#         try:
+#             excel_file = request.FILES['files']
+#         except MultiValueDictKeyError:
+#             messages.error(request, 'File not found!')
+#             return redirect(import_url)
+        
+#         file_extension = str(excel_file).split('.')[-1]
+        
+#         if file_extension == 'xls':
+#             data = get_xls_data(excel_file, column_limit=9)
+#         elif file_extension == 'xlsx':
+#             data = get_xlsx_data(excel_file, column_limit=9)
+#         else:
+#             messages.error(request, 'Invalid File, Upload Excel file only!')
+#             return redirect(import_url)
+
+#         sellers = data['Sheet1']
+#         seller_count = 0
+
+#         if len(sellers) > 1:
+#             for seller in sellers:
+#                 if len(seller) > 0:
+#                     if seller[0] != 'CompanyName':
+#                         if len(seller) < 9:
+#                             i = len(seller)
+#                             while i < 8:
+#                                 seller.append('')
+#                                 i += 1
+#                         if seller:
+#                             seller_count += 1
+#                             Seller.objects.create(
+#                                 company_name=seller[0], 
+#                                 gstin=seller[1],
+#                                 address=seller[2],
+#                                 city=seller[3],
+#                                 state=seller[4],
+#                                 pin_code=seller[5],
+#                                 mobile=seller[6],
+#                                 email=seller[7],
+#                                 pan_card=seller[8]
+#                             )
+#         messages.success(request, f'Succesfully added {seller_count} Sellers')
+#         return redirect(import_url)
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
@@ -283,6 +339,8 @@ class LeadViewSet(viewsets.ModelViewSet):
     
 #     return render(request, 'accounts/leads.html', {'leads': leads})
 
+
+
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
 def create_lead(request):
@@ -297,15 +355,14 @@ def create_lead(request):
         contact_form = ContactForm(request.POST)
         company_form = CompanyForm(request.POST)
 
-
+        print('Pre save')
         if lead_form.is_valid() and contact_form.is_valid() and company_form.is_valid():
             lead = lead_form.save()
-            contact = contact_form.save()
             company = company_form.save()
-
-            setattr(lead, 'contact', contact)   
-            lead.save()
+            contact = contact_form.save()
+            print('post save')
             setattr(lead, 'company', company)
+            setattr(lead, 'contact', contact)   
             lead.save()
             lead_form.save()
             
@@ -318,18 +375,23 @@ def create_lead(request):
 @allowed_users(allowed_roles=['employee', 'admin'])
 def update_lead(request, id):
     lead = Lead.objects.get(id=id)
+   
     lead_form = LeadForm(instance=lead)
-    contact_form = ContactForm(instance=lead.contact)
+    print(lead.company)
     company_form = CompanyForm(instance=lead.company)
+    contact_form = ContactForm(instance=lead.contact)
 
     if request.method == 'POST':
         lead_form = LeadForm(request.POST, instance=lead)
         contact_form = ContactForm(request.POST, instance=lead.contact)
         company_form = CompanyForm(request.POST, instance=lead.company)
+        print("pre save")
         if lead_form.is_valid() and contact_form.is_valid() and company_form.is_valid():
-            lead_form.save()
+            lead = lead_form.save()
             contact_form.save()
             company_form.save()
+            print("post save")
+            messages.success(request, f'Succesfully updated Lead {lead.company}')
             return redirect('http://localhost:8000/leads/') 
     
     context = {'lead_form': lead_form, 'contact_form': contact_form, 'company_form': company_form}
@@ -337,7 +399,7 @@ def update_lead(request, id):
 
 
 @login_required(login_url='login')
-@allowed_users(allowed_roles=['employee'])
+@allowed_users(allowed_roles=['employee', 'admin'])
 def delete_lead(request, id):
     lead = Lead.objects.get(id=id)
 
@@ -345,7 +407,7 @@ def delete_lead(request, id):
         lead.delete()
         return redirect('http://localhost:8000/leads/')
         
-    context = {'data': lead}
+    context = {'data': lead, 'delete': f'delete_lead', 'reverse': lead._meta.verbose_name_plural}
     return render(request, 'accounts/delete.html', context)
 
 @login_required(login_url='login')
@@ -539,22 +601,21 @@ def send_email(request, id):
             from_email = settings.EMAIL_HOST_USER
             to_email = "mailmerairishabh99@gmail.com"
             
-            img_data =  open('D:\Web\Django\customer-management-app\crm_project\static\images\photo.jpg', 'rb').read()
+            img_data =  open('D:\Web\Django\customer-management-app\crm_project\static\images\LOGO.png', 'rb').read()
 
             html_part = MIMEMultipart(_subtype='related')
            
-            body = MIMEText('<h1>Image below: </h1><br><img src="cid:myimage" />', _subtype='html')
+            body = MIMEText('<h3>Image: </h3><br><img src="cid:myimage" />', _subtype='html')
             html_part.attach(body)
 
-            img = MIMEImage(img_data, 'jpeg')
-            img.add_header('Content-Id', '<myimage>')  # angle brackets are important
-            img.add_header("Content-Disposition", "inline", filename="myimage") # David Hess recommended this edit
+            img = MIMEImage(img_data, 'png')
+            img.add_header('Content-Id', '<myimage>') 
+            img.add_header("Content-Disposition", "inline", filename="myimage") 
             html_part.attach(img)
 
             msg = EmailMessage(subject, message, from_email, [to_email])
             msg.attach(html_part) 
             print(f"Message: {message}\n Subject: {subject}\n From: {from_email}\n To: {to_email}\nImage: {img}")
-            # Attach the raw MIMEBase descendant. This is a public method on EmailMessage
             msg.send()
             
             messages.success(request, f'Email sucesfully send to {customer}')
@@ -580,10 +641,29 @@ def user_page(request):
     context = {
         'orders': orders,  'total_orders': total_orders,
         'delivered': delivered, 'pending': pending, 
-        'customers': customers, 'leads': leads, 'opportunities': opportunities
+        'customers': customers, 'leads': leads, 'opportunities': opportunities,
+        'total_leads': leads.count(), 'total_opportunities': opportunities.__len__(), 'total_customers': customers.__len__(),
     }
     print('request')
     return render(request, 'accounts/user.html', context)
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
+def users(request):
+    users = User.objects.all()
+
+    context = {'users': users}
+    return render(request, 'accounts/users.html', context)
+
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
+def add_employee(request, id):
+    user = User.objects.get(id=id)
+    group = Group.objects.get(name='employee')
+    user.groups.add(group)
+    messages.success(request, 'Succesfully User added to Employee')
+    return redirect('/')
 
 
 @login_required(login_url='login')
