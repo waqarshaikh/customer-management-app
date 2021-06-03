@@ -1,0 +1,37 @@
+{% extends 'accounts/base.html' %}
+
+{% block content %}
+    {% for message in messages %}
+        <p id='messages'><i class="fas fa-check-circle" style="font-size:24px;color:green"></i> {{ message }}</p>
+    {% endfor %}
+    <a class="btn btn-primary mb-3" href="{% url 'create_call' lead.id %}">Add call</a> 
+    <div class="row">
+        <div class="col-md">
+            <div class="card card-body">
+                <h5>Calls</h5>
+            </div>
+            <div class="card card-body">
+                <table class="table">
+                    <tr>
+                        <th>Type</th>
+                        <th>Date</th>
+                        <th>Flag</th>
+                        <th>Description</th>
+                        <th>Update</th>
+                        <th>Remove</th>
+                    </tr>
+                    {% for call in calls %}
+                        <tr>
+                            <td>{{ call.call_type }}</td>
+                            <td>{{ call.date }}</td>
+                            <td>{{ call.flag }}</td>
+                            <td>{{ call.description }}</td>
+                            <td><a href="/lead_detail/{{lead.id}}/calls/update/{{call.id}}/" class="btn btn-primary btn-sm">Update</a></td>
+                            <td><a href="/lead_detail/{{lead.id}}/calls/delete/{{call.id}}/" class="btn btn-danger btn-sm">Delete</a></td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

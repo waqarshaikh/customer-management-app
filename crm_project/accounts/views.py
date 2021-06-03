@@ -484,7 +484,7 @@ def delete_opportunity(request, id):
         opportunity.delete()
         return redirect('http://localhost:8000/opportunities/')
         
-    context = {'data': opportunity}
+    context = {'data': opportunity, 'delete': f'delete_opportunity', 'reverse': opportunity._meta.verbose_name_plural}
     return render(request, 'accounts/delete.html', context)
 
 @login_required(login_url='login')
@@ -502,14 +502,25 @@ def convert_opportunity(request, id):
 @allowed_users(allowed_roles=['employee', 'admin'])
 def calls(request, id):
     lead = Lead.objects.get(id=id)
+    calls = lead.call_set.all()
 
+    context = {'calls': calls, 'lead':lead}
+    return render(request, 'accounts/calls.html', context)
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['employee', 'admin'])
+def create_call(request, id):
+    lead = Lead.objects.get(id=id)
+    
     if request.method == 'POST':
         call_form = CallForm(request.POST)
+
         if call_form.is_valid():
-            call = call_form.save()
-            setattr(lead, 'call', call)
-            lead.save()
-            return redirect('/') 
+            call = call_form.save(commit=False)
+            call.lead = lead
+            call_form.save()
+            messages.success(request, "Succesfully added call")
+            return redirect(f'/lead_detail/{id}/calls') 
     else:
         call_form = CallForm()
     context = {'call_form': call_form}
@@ -517,20 +528,31 @@ def calls(request, id):
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['employee', 'admin'])
-def create_call(request, id):
-    lead = Lead.objects.get(id=id)
+def update_call(request, id, call_id):
+    call = Call.objects.get(id=call_id)
+    form = CallForm(instance=call)
 
     if request.method == 'POST':
-        call_form = CallForm(request.POST)
-        if call_form.is_valid():
-            call = call_form.save()
-            setattr(lead, 'call', call)
-            lead.save()
-            return redirect('/') 
-    else:
-        call_form = CallForm()
-    context = {'call_form': call_form}
-    return render(request, 'accounts/call_form.html', context)
+        form = CallForm(request.POST, instance=call)
+        if form.is_valid():
+            form.save()
+            return redirect(f'http://localhost:8000/lead_detail/{id}/calls/') 
+    
+    context = {'form': form}
+    return render(request, 'accounts/opportunity_form.html', context)
+
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['employee', 'admin'])
+def delete_call(request, id, call_id):
+    call = Call.objects.get(id=call_id)
+
+    if request.method == 'POST':
+        call.delete()
+        return redirect(f'http://localhost:8000/lead_detail/{id}/calls/')
+        
+    context = {'data': call,'delete': f'/lead_detail/{id}/calls/delete/{call_id}/', 'reverse': f'/lead_detail/{id}/calls/'}
+    return render(request, 'accounts/delete.html', context)
 #-----------------Call end----------------------------------------------
 
 @login_required(login_url='login')

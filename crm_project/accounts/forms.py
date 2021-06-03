@@ -56,6 +56,7 @@ class CallForm(ModelForm):
     class Meta:
         model = Call
         fields = '__all__'
+        exclude = ['lead']
 
 class ProductForm(ModelForm):
     class Meta:

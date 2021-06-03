@@ -6,11 +6,19 @@
     <div class="col-md-6">
         <div class="card card-body">
             <p>Are you sure you want to delete {{data.class_name}} {{ data }} ?</p>
+            {% if data.class_name == "call" %}
+            <form action="{{delete}}" method="POST">
+                {% csrf_token %}
+                <a href="{{reverse}}" class="btn btn-sm">Cancel</a>
+                <input class="btn btn-danger btn-sm" type="submit" value="Confirm">
+            </form>
+            {% else %}
             <form action="{% url delete data.id %}" method="POST">
                 {% csrf_token %}
                 <a href="{% url reverse %}" class="btn btn-sm">Cancel</a>
                 <input class="btn btn-danger btn-sm" type="submit" value="Confirm">
             </form>
+            {% endif %}
         </div>
     </div>
 </div>

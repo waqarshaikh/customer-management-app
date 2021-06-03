@@ -6,9 +6,8 @@
         <div class="card card-body">
             <h5>Actions</h5>
             <hr>
-            <a href="{% url 'create_call' lead.id %}" class="btn btn-outline-primary btn-sm">Create Call</a><br>
-            <a href="{% url 'create_call' lead.id %}" class="btn btn-outline-info btn-sm">Create Call</a><br>
-            <a href="{% url 'create_call' lead.id %}" class="btn btn-outline-info btn-sm">Create Call</a>
+            <a href="{% url 'calls' lead.id %}" class="btn btn-outline-primary btn-sm">Calls</a><br>
+            <a href="{% url 'create_call' lead.id %}" class="btn btn-outline-info btn-sm">Notes</a><br>
         </div>
     </div>
     <div class="col-md">
