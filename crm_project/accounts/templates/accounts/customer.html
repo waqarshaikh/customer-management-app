@@ -12,12 +12,12 @@
     </div>
     <div class="col-md">
         <div class="card card-body">
-            <h5>Lead Information</h5>
+            <h5>Lead Information</h5><a href="{% url 'convert_lead' lead.id %}" class="btn btn-success btn-sm">Convert to Opportunity</a>
             <hr>
-            <p>Name: {{ lead.contact.name }}</p>
-            <p>Phone: {{ lead.contact.phone }}</p>
-            <p>Email: {{ lead.contact.email }}</p>
-            <p>Address: {{ lead.contact.phone }}</p>
+            <p>Name: {{ contact.name }}</p>
+            <p>Phone: {{ contact.phone }}</p>
+            <p>Email: {{ contact.email }}</p>
+            <p>Address: {{ contact.phone }}</p>
             <p>Status: {{ lead.status }}</p>
             <p>Status: {{ lead.source }}</p>
         </div>

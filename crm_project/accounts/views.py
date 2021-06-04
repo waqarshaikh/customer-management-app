@@ -622,9 +622,10 @@ def delete_contact(request, id, contact_id):
 @allowed_users(allowed_roles=['employee', 'admin'])
 def lead_detail_view(request, id):
     lead = Lead.objects.get(id=id)
-    
+    contact = lead.contact_set.all().first()
+
     context = {
-        'lead': lead
+        'lead': lead, 'contact': contact
     }
     return render(request, 'accounts/customer.html', context)
 
