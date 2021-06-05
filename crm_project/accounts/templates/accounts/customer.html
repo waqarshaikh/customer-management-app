@@ -12,7 +12,14 @@
     </div>
     <div class="col-md">
         <div class="card card-body">
-            <h5>Lead Information</h5><a href="{% url 'convert_lead' lead.id %}" class="btn btn-success btn-sm">Convert to Opportunity</a>
+            <h5>Lead Information
+                {% if lead.success %}
+                    <span style='color: white; background-color: green; padding: 5px; border-radius: 5px'>Success Lead</span>
+                {% else %}
+                    <a href="{% url 'convert_lead' lead.id %}" style="margin-left: 10px"
+                    class="btn btn-success btn-sm">Convert to Opportunity</a>
+                {% endif %}   
+            </h5>
             <hr>
             <p>Name: {{ contact.name }}</p>
             <p>Phone: {{ contact.phone }}</p>

@@ -1,0 +1,34 @@
+{% extends 'accounts/base.html' %}
+
+{% block content %}
+    {% for message in messages %}
+        <span id='messages'><i class="fas fa-check-circle" style="font-size:24px;color:green"></i> {{ message }}</span>
+    {% endfor %}
+    <div class="row">
+        <div class="col-md">
+            <div class="card card-body">
+                <h5>Success Leads</h5>
+            </div>
+            <div class="card card-body">
+                <table class="table">
+                    <tr>
+                        <th>Lead Name</th>
+                        <th>Assigned To</th>
+                        <th>Source</th>
+                        <th>Status</th>
+                        <th>Remove</th>
+                    </tr>
+                    {% for lead in leads %}
+                        <tr>
+                            <td>{{ lead.company.company_name }}</td>
+                            <td>{{ lead.employee }}</td>
+                            <td>{{ lead.source }}</td>
+                            <td>{{ lead.status }}</td>
+                            <td><a href="/delete_lead/{{lead.id}}" class="btn btn-danger btn-sm">Delete</a></td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

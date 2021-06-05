@@ -9,7 +9,7 @@ from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.models import Group, User
+from django.contrib.auth.models import Group, User  
 from django.core.mail import send_mail
 from django.core.mail import EmailMessage
 from email.mime.multipart import MIMEMultipart
@@ -325,9 +325,10 @@ class LeadViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         if self.request.user.is_staff:
-            leads = Lead.objects.all()
+            leads = Lead.objects.all().filter(success=False, delete=False)
         else: 
-            leads = self.request.user.employee.lead_set.all()
+            leads = self.request.user.employee.lead_set.filter(success=False, delete=False)
+            
         return leads
 # @login_required(login_url='login')
 # @allowed_users(allowed_roles=['admin', 'employee'])
@@ -409,7 +410,11 @@ def delete_lead(request, id):
     lead = Lead.objects.get(id=id)
 
     if request.method == 'POST':
-        lead.delete()
+        if lead.delete:
+            lead.delete()
+        else:
+            lead.delete = True
+            lead.save()
         return redirect('http://localhost:8000/leads/')
         
     context = {'data': lead, 'delete': f'delete_lead', 'reverse': lead._meta.verbose_name_plural}
@@ -419,13 +424,38 @@ def delete_lead(request, id):
 @allowed_users(allowed_roles=['employee'])
 def convert_lead(request, id):
     lead = Lead.objects.get(id=id)
-    opportunity = Opportunity.objects.create(lead=lead, contact=lead.contact)
+    lead.success = True
+    lead.save()
+    opportunity = Opportunity.objects.create(lead=lead, contact=lead.contact_set.all().first())
 
     messages.success(request, f'Lead  {lead}  succesfully converted to Opportunity.')
 
     if request.user.is_staff:
         return redirect('/')
-    return redirect('http://localhost:8000/opportunities/') 
+    return redirect('http://localhost:8000/opportunities/')
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['employee', 'admin'])
+def restore_lead(request, id):
+    lead = Lead.objects.get(id=id)
+    lead.delete = False
+    lead.save()
+    return redirect('leads')
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['employee', 'admin'])
+def leads_recycle_bin(request):
+    leads = Lead.objects.filter(delete=True)
+    context = {'leads': leads}
+    return render(request, 'accounts/lead_recycle_bin.html', context)
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['employee', 'admin'])
+def success_leads(request):
+    leads = Lead.objects.filter(success=True)
+    context = {'leads': leads}
+    return render(request, 'accounts/success_leads.html', context)
+
 
 #-----------------Lead end----------------------------------------------
 #-----------------Opportunity start----------------------------------------------

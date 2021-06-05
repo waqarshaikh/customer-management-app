@@ -34,6 +34,9 @@ urlpatterns = [
     path('update_lead/<id>', views.update_lead, name='update_lead'),
     path('delete_lead/<id>', views.delete_lead, name='delete_lead'),
     path('convert_lead/<id>', views.convert_lead, name='convert_lead'),
+    path('leads/recycle_bin/', views.leads_recycle_bin, name='leads_recycle_bin'),
+    path('leads/success/', views.success_leads, name='success_leads'),
+    path('leads/recycle_bin/restore_lead/<id>/', views.restore_lead, name='restore_lead'),
 
     path('lead_detail/<id>', views.lead_detail_view, name='lead_detail'),
 
