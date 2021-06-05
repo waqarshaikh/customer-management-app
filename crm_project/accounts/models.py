@@ -51,26 +51,6 @@ class Order(models.Model):
         return self.product.name
 
 
-
-
-
-class Company(models.Model):
-    company_name = models.CharField(max_length=255, null=True)
-    company_phone = models.CharField(max_length=15, null=True)
-    company_email = models.EmailField(max_length=255, null=True)
-    address = models.TextField(max_length=255, null=True)
-    website = models.URLField(max_length=255)
-    profile_pic = models.ImageField(null=True, blank=True, default='default-profile-pic.jpg', verbose_name="Logo/Photo")
-    
-    class Meta:
-        verbose_name_plural = 'companies'
-    
-    def class_name(self):
-        return self._meta.model_name
-
-    def __str__(self):
-        return self.company_name
-
 class Lead(models.Model):
     SOURCES = (
         ('Facebook', 'Facebook'),
@@ -92,11 +72,13 @@ class Lead(models.Model):
         ('Others', 'Others'),
     )
     # contact = models.ForeignKey(Contact, null=True, on_delete=models.CASCADE)
-    company = models.ForeignKey(Company, null=True, on_delete=models.CASCADE)
+    # company = models.ForeignKey(Company, null=True, on_delete=models.CASCADE)
     source = models.CharField(max_length=20, null=True,  choices=SOURCES)
     employee = models.ForeignKey(Employee, null=True, on_delete=models.CASCADE, verbose_name='Assigned To')
     status = models.CharField(max_length=200, null=True, choices=STATUS)
     comment = models.TextField(max_length=100, null=True, blank=True)
+    success = models.BooleanField(default=False)
+    delete = models.BooleanField(default=False)
     
     class Meta:
         verbose_name_plural = 'leads'
@@ -106,6 +88,24 @@ class Lead(models.Model):
 
     def __str__(self):
         return self.company.company_name
+
+class Company(models.Model):
+    company_name = models.CharField(max_length=255, null=True)
+    company_phone = models.CharField(max_length=15, null=True)
+    company_email = models.EmailField(max_length=255, null=True)
+    address = models.TextField(max_length=255, null=True)
+    website = models.URLField(max_length=255)
+    profile_pic = models.ImageField(null=True, blank=True, default='default-profile-pic.jpg', verbose_name="Logo/Photo")
+    lead = models.OneToOneField(Lead, on_delete=models.CASCADE, primary_key=True)
+    
+    class Meta:
+        verbose_name_plural = 'companies'
+    
+    def class_name(self):
+        return self._meta.model_name
+
+    def __str__(self):
+        return self.company_name
 
 class Contact(models.Model):
     name = models.CharField(max_length=255, null=True)

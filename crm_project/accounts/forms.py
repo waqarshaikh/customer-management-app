@@ -48,7 +48,7 @@ class CompanyForm(ModelForm):
         model = Company
         fields = '__all__'
         
-        exclude = ['profile_pic', ]
+        exclude = ['profile_pic', 'lead']
 
     # def __init__(self, *args, **kwargs):
     #     self.fields["address"].widget = forms.Textarea(attrs={"rows":4,"cols":20})
