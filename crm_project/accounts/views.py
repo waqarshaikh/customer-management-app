@@ -714,10 +714,13 @@ def send_email(request, id):
             
             message = request.POST.get('message')
             subject = request.POST.get('subject')
+            image = request.FILES['img']
             from_email = settings.EMAIL_HOST_USER
-            to_email = "mailmerairishabh99@gmail.com"
+            to_email = "shaikhwaqar1999@gmail.com"
+
+            print("Image: ",image)
             
-            img_data =  open('D:\Web\Django\customer-management-app\crm_project\static\images\LOGO.png', 'rb').read()
+            img_data =  open(f'D:\Web\Django\customer-management-app\crm_project\static\images\{image}', 'rb').read()
 
             html_part = MIMEMultipart(_subtype='related')
            

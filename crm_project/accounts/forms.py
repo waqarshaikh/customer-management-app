@@ -79,4 +79,4 @@ class CreateUserForm(UserCreationForm):
 class EmailForm(ModelForm):
     class Meta:
         model = Email
-        fields = ['subject', 'message']
+        fields = '__all__'
