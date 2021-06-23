@@ -12,17 +12,23 @@
                     <tr>
                         <th>Name</th>
                         <th>Email</th>
-                        <th>Group</th>
+                        <th>Phone</th>
                         <th>Action</th>
-                        <th>Update</th>
-                        <th>Remove</th>
+                        {% comment %} <th>Update</th>
+                        <th>Remove</th> {% endcomment %}
                     </tr>
                     {% for user in users %}
                         <tr>
                             <td>{{ user.username }}</td>
                             <td>{{ user.email }}</td>
-                            <td>{% for group in user.groups.all %}{{ group.name }}{% endfor %}</td>
-                            <td><a href="{% url 'add-employee' user.id %}" class="btn btn-primary btn-sm">Add Employee</a></td>
+                            <td>{{ user.employee.phone }}</td>
+                            <td>
+                            {% if user.is_active %}
+                            <a href="{% url 'add-employee' user.id %}" class="btn btn-danger btn-sm">Remove Employee</a>
+                            {% else %}
+                            <a href="{% url 'add-employee' user.id %}" class="btn btn-primary btn-sm">Add Employee</a>
+                            {% endif %}
+                            </td>
                             {% comment %} <td><a href="{% url 'update_user' user.id %}" class="btn btn-primary btn-sm">Update</a></td> {% endcomment %}
                             {% comment %} <td><a href="{% url 'delete_user' user.id %}" class="btn btn-danger btn-sm">Delete</a></td> {% endcomment %}
                         </tr>
