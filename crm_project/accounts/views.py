@@ -786,6 +786,18 @@ def add_employee(request, id):
 
 
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
+def delete_employee(request, id):
+    user = User.objects.get(id=id)
+
+    if request.method == 'POST':
+        user.delete()
+        return redirect('/')
+        
+    context = {'data': user}
+    return render(request, 'accounts/delete.html', context)
+
+@login_required(login_url='login')
 @allowed_users(allowed_roles=['employee'])
 def account_settings(request):
     employee = request.user.employee
