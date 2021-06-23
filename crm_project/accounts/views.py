@@ -769,7 +769,7 @@ def user_page(request):
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
 def users(request):
-    users = User.objects.all()
+    users = User.objects.filter(is_superuser=False)
 
     context = {'users': users}
     return render(request, 'accounts/users.html', context)
