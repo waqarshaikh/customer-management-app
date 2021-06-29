@@ -1,4 +1,10 @@
-{% extends 'accounts/base.html' %} {% block content %} {% include 'accounts/status.html' %}
+{% extends 'accounts/base.html' %} {% block content %} 
+
+{% if request.user.is_staff %}
+{% include 'accounts/status_admin.html' %}
+{% else %}
+{% include 'accounts/status_employee.html' %}
+{% endif %}
 
 <br>
 
