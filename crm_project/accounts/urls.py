@@ -29,6 +29,7 @@ urlpatterns = [
 
     path('users/', views.users, name='users'),
     path('add_employee/<id>', views.add_employee, name='add-employee'),
+    path('delete_employee/<id>', views.delete_employee, name='delete-employee'),
     
     path('create_lead/', views.create_lead, name='create_lead'),
     path('update_lead/<id>', views.update_lead, name='update_lead'),

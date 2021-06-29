@@ -828,7 +828,7 @@ def delete_employee(request, id):
         user.delete()
         return redirect('/')
         
-    context = {'data': user}
+    context = {'data': user, 'delete': f'delete-employee', 'reverse': "users"}
     return render(request, 'accounts/delete.html', context)
 
 @login_required(login_url='login')
