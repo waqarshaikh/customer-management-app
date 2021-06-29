@@ -13,9 +13,14 @@
 {% block content %}
 
 <div class="container">
-        {% for message in messages %}
-            <p id='messages'><i class="fas fa-check-circle" style="font-size:24px;color:green"></i> {{ message }}</p>
-        {% endfor %}
+    {% for message in messages %}
+    <p id='messages' style="height:40px; display: flex; align-items: center; gap: 5px;"><ion-icon name="checkmark-outline" style="font-size: 25px;"></ion-icon></i> {{ message }}</p>
+    {% endfor %}
+
+    <a class="btn btn-success mb-3" style="height:40px; display: inline-flex; align-items: center; gap: 5px;" href="{% url 'success_leads' %}"><ion-icon name="checkmark-circle-outline" style="font-size: 25px;"></ion-icon><span>  Success Leads</span></a>
+    <a class="btn btn-danger mb-3" style="height:40px; display: inline-flex; align-items: center; gap: 5px;" href="{% url 'leads_recycle_bin' %}"><ion-icon name="trash-outline" style="font-size: 23px;"></ion-icon>Recycle Bin</a>
+
+        
     <div class="row">
         <div class="col-md">
             <div class="card card-body">
