@@ -36,7 +36,8 @@ from .decorators import unauthenticated_user, allowed_users, admin_only
 @admin_only
 def home(request):
     print(request.user)
-    leads = Lead.objects.all()
+    leads = Lead.objects.all().filter(success=False, delete=False)
+    products = Product.objects.all()
     opportunities = Opportunity.objects.all()
     customers = Customer.objects.all()
     orders = Order.objects.all()
@@ -47,11 +48,29 @@ def home(request):
     pending = orders.filter(status='Pending').count()
     last_five_orders = orders.order_by('-id')[:5]
 
+    employee_data = []
+    
+    for emp in employees:
+        _leads = emp.employee.lead_set.all()
+        _opportunities = get_opportunity(request, _leads)
+        _customers = get_customers(request, _opportunities)
+    
+        employee = [
+            emp.username,
+            _leads.count(),
+            _opportunities.__len__(),
+            _customers.__len__(),
+        ]
+        employee_data.append(employee)
+
     context = {'orders': orders, 'employees': employees, 
         'total_orders': total_orders, 'total_employees': total_employees,
         'delivered': delivered, 'pending': pending, 'last_five_orders': last_five_orders,
         'total_leads': leads.count(), 'total_opportunities': opportunities.count(), 'total_customers': customers.count(),
+        'employee_data': employee_data, 'products': products,
     }
+    render(request, "accounts/base.html", context)
+
     return render(request, 'accounts/dashboard.html', context)
 
 # class ParseExcel(APIView):
@@ -145,6 +164,13 @@ def customer_feedbacks(request):
     return render(request, 'accounts/customer_feedback.html', context)
 
 #-------------------------Customer start--------------------------------------- 
+def get_customers(request, opportunities):
+    customers = []
+    for opportunity in opportunities:
+        if hasattr(opportunity, 'customer'):
+            customers.append(opportunity.customer)
+    return customers
+
 def get_employee_customers(request):
     opportunities = get_employee_opportunities(request)
     customers = []
@@ -205,7 +231,7 @@ def delete_customer(request, id):
         customer.delete()
         return redirect('http://localhost:8000/customers/')
         
-    context = {'data': customer}
+    context = {'data': customer, 'delete': f'delete_lead', 'reverse': customer._meta.verbose_name_plural}
     return render(request, 'accounts/delete.html', context)
 
 
@@ -459,6 +485,14 @@ def success_leads(request):
 
 #-----------------Lead end----------------------------------------------
 #-----------------Opportunity start----------------------------------------------
+
+def get_opportunity(request, leads):
+    opportunities = []
+    for lead in leads:
+        if hasattr(lead, 'opportunity'):
+            opportunities.append(lead.opportunity)
+    return opportunities
+
 def get_employee_opportunities(request):
     opportunities = []
     leads = request.user.employee.lead_set.all()
@@ -770,7 +804,7 @@ def user_page(request):
 @allowed_users(allowed_roles=['admin'])
 def users(request):
     users = User.objects.filter(is_superuser=False)
-
+    
     context = {'users': users}
     return render(request, 'accounts/users.html', context)
 

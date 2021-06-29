@@ -22,7 +22,7 @@
     <!-------------------------- pie chart------------------------- -->
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript">
-    
+        
         google.charts.load('current', {
             'packages': ['corechart']
         });
@@ -31,15 +31,14 @@
         function drawChart() {
 
             var data = google.visualization.arrayToDataTable([
-                ['Task', 'Hours per Day'],
-                ['Opportunity', 2],
-                ['Customer', 3],
-                ['Failed', 6],
-                ['Not Satisfied', 7]
+                ['Key', 'Values'],
+                ['Leads', {{ total_leads }}],
+                ['Opportunities', {{ total_opportunities }}],
+                ['Customers', {{ total_customers }}],
             ]);
 
             var options = {
-                title: 'Total Leads'
+                title: 'Total Performance'
             };
 
             var chart = new google.visualization.PieChart(document.getElementById('piechart'));
@@ -196,17 +195,16 @@
 
         function drawChart() {
             var data = google.visualization.arrayToDataTable([
-                ['Year', 'Leads', 'Opportunity', 'Customer'],
-                ['2018', 67, 30, 30],
-                ['2019', 50, 20, 30],
-                ['2020', 57, 47, 10],
-                ['2021', 30, 21, 9]
+                ['Employee', 'Leads', 'Opportunity', 'Customer'],
+                {% for name, total_leads, total_opportunities, total_customers in employee_data %}
+                    ['{{ name }}', {{ total_leads }}, {{ total_opportunities }}, {{ total_customers }} ],
+                {% endfor %}
             ]);
 
             var options = {
                 chart: {
-                    title: 'Company Performance',
-                    subtitle: 'Leads, Opportunity, and Customer: 2018-2021',
+                    title: 'Employees Performance',
+                    subtitle: 'Leads, Opportunity, and Customer',
                 },
                 bars: 'horizontal' // Required for Material Bar Charts.
             };
