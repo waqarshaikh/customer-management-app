@@ -89,6 +89,21 @@ class Lead(models.Model):
     def __str__(self):
         return self.company.company_name
 
+class Opportunity(models.Model):
+    lead = models.OneToOneField(Lead, null=True, blank=True, on_delete=models.CASCADE)
+    employee = models.ForeignKey(Employee, null=True, on_delete=models.CASCADE, verbose_name='Assigned To')
+    success = models.BooleanField(default=False)
+    delete = models.BooleanField(default=False)
+
+    class Meta:
+        verbose_name_plural = 'opportunities'
+    
+    def class_name(self):
+        return self._meta.model_name
+
+    def __str__(self):
+        return str(self.lead)
+
 class Company(models.Model):
     company_name = models.CharField(max_length=255, null=True)
     company_phone = models.CharField(max_length=15, null=True)
@@ -114,6 +129,7 @@ class Contact(models.Model):
     designation = models.CharField(max_length=255, null=True)
     date_created = models.DateTimeField(auto_now_add=True, null=True)
     lead = models.ForeignKey(Lead, null=True, on_delete=models.SET_NULL)
+    opportunity = models.ForeignKey(Opportunity, null=True, on_delete=models.SET_NULL)
 
     class Meta:
         verbose_name_plural = 'contacts'
@@ -125,18 +141,7 @@ class Contact(models.Model):
         return self.name
 
 
-class Opportunity(models.Model):
-    contact = models.ForeignKey(Contact, null=True, on_delete=models.CASCADE)
-    lead = models.OneToOneField(Lead, null=True, blank=True, on_delete=models.CASCADE)
-    
-    class Meta:
-        verbose_name_plural = 'opportunities'
-    
-    def class_name(self):
-        return self._meta.model_name
 
-    def __str__(self):
-        return str(self.contact.name)
 
 class Customer(models.Model):
     contact = models.ForeignKey(Contact, null=True, on_delete=models.CASCADE)
@@ -178,6 +183,7 @@ class Call(models.Model):
         ("Reschedule", "Reschedule"),
     )
     lead = models.ForeignKey(Lead, null=True, on_delete=models.CASCADE)
+    opportunity = models.ForeignKey(Opportunity, null=True, on_delete=models.SET_NULL)
     date = models.DateTimeField(null=True)
     call_type = models.CharField(max_length=255, null=True,  choices=CALL_TYPES)
     flag = models.CharField(max_length=255, null=True,  choices=FLAGS)

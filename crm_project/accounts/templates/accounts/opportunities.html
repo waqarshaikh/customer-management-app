@@ -1,10 +1,27 @@
 {% extends 'accounts/base.html' %}
 
 {% block content %}
-    <a class="btn btn-primary mb-3" href="{% url 'create_opportunity' %}">Add Opportunity</a>
+<div class="container">
+    {% for message in messages %}
+    <p id='messages' style="height:40px; display: flex; align-items: center; gap: 5px;"><ion-icon name="checkmark-outline" style="font-size: 25px;"></ion-icon></i> {{ message }}</p>
+    {% endfor %}
+
+    <a class="btn btn-success mb-3" style="height:40px; display: inline-flex; align-items: center; gap: 5px;" href="{% url 'success_leads' 'opportunities' %}"><ion-icon name="checkmark-circle-outline" style="font-size: 25px;"></ion-icon><span>  Success Leads</span></a>
+    <a class="btn btn-danger mb-3" style="height:40px; display: inline-flex; align-items: center; gap: 5px;" href="{% url 'leads_recycle_bin' 'opportunities' %}"><ion-icon name="trash-outline" style="font-size: 23px;"></ion-icon>Recycle Bin</a>
     <div class="row">
         <div class="col-md">
             <div class="card card-body">
+                 <div class="card text-white bg-dark mb-3" style="max-width: 100rem;">
+                    <div class="card-body" style="text-align: center; padding-bottom: 0px;">
+                        <h4>OPPORTUNITY
+                            <div style="float: right;">
+                                <a class="btn btn-primary mb-3" href="{% url 'create_opportunity' %}">Add Opportunity</a>
+
+                                {% comment %} <a class="btn btn-primary" href="{% url 'import-buyer' %}">ADD BULK BUYER</a> {% endcomment %}
+                            </div>
+                        </h4>
+                    </div>
+                </div>
                 <h5>Opportunity</h5>
             </div>
             <div class="card card-body">
@@ -20,7 +37,7 @@
                     </tr>
                     {% for opportunity in opportunities %}
                         <tr>
-                            <td>{{ opportunity.contact.name }}</td>
+                            <td>{{ opportunity.lead }}</td>
                             <td>{{ opportunity.lead.source }}</td>
                             <td>{{ opportunity.lead.employee }}</td>
                             <td>{{ opportunity.lead.status }}</td>
@@ -33,4 +50,5 @@
             </div>
         </div>
     </div>
+</div>
 {% endblock content %}

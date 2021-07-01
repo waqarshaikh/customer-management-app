@@ -89,7 +89,7 @@
             </div>
             {% if request.user.is_active %}
             <span class="logout">Hello, {{ request.user }}</span>
-            <span class=""><a class="logout btn btn-outline-light" href="{% url 'logout' %}">Logout</a></span> {% endif %}
+            <span class=""><a class="logout btn btn-outline-info" href="{% url 'logout' %}" style="display: flex; align-items: center; gap: 5px"><ion-icon name="log-out-outline" style="font-size: 25px;"></ion-icon>Logout</a></span> {% endif %}
         </div>
     </nav>
     <br>

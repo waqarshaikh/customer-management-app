@@ -1,3 +1,4 @@
+from django.db.models.query import QuerySet
 from .serializers import LeadSerializer
 from typing import DefaultDict
 from customer_feedback.models import CustomerFeedback, IntrestedCustomer, CustomerComplaint
@@ -452,7 +453,7 @@ def convert_lead(request, id):
     lead = Lead.objects.get(id=id)
     lead.success = True
     lead.save()
-    opportunity = Opportunity.objects.create(lead=lead, contact=lead.contact_set.all().first())
+    opportunity = Opportunity.objects.create(lead=lead, contact=lead.contact_set.all(), call=lead.call_set.all(), employee=lead.employee)
 
     messages.success(request, f'Lead  {lead}  succesfully converted to Opportunity.')
 
@@ -462,24 +463,40 @@ def convert_lead(request, id):
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['employee', 'admin'])
-def restore_lead(request, id):
-    lead = Lead.objects.get(id=id)
-    lead.delete = False
-    lead.save()
-    return redirect('leads')
+def restore_lead(request, id, data):
+    if data == 'leads':
+        data = Lead.objects.get(id=id)
+            
+    elif data == 'opportunities':
+        data = Opportunity.objects.get(id=id)
+
+    data.delete = False
+    data.save()
+    return redirect(data._meta.verbose_name_plural)
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['employee', 'admin'])
-def leads_recycle_bin(request):
-    leads = Lead.objects.filter(delete=True)
-    context = {'leads': leads}
+def leads_recycle_bin(request, data):
+    if data == "leads":
+        data = Lead.objects.filter(delete=True) if request.user.is_staff else request.user.employee.lead_set.filter(delete=True)
+            
+    elif data == "opportunities":
+        data = Opportunity.objects.filter(delete=True) if request.user.is_staff else request.user.employee.opportunity_set.filter(delete=True)
+    
+    name = data.first().class_name() if data.first() != None else None
+    
+    context = {'data': data, 'name': name}
     return render(request, 'accounts/lead_recycle_bin.html', context)
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['employee', 'admin'])
-def success_leads(request):
-    leads = Lead.objects.filter(success=True)
-    context = {'leads': leads}
+def success_leads(request, data):
+    if data == "leads":
+        data = Lead.objects.filter(success=True) if request.user.is_staff else request.user.employee.lead_set.filter(success=True)
+    elif data == "opportunities":
+        data = Opportunity.objects.filter(success=True) if request.user.is_staff else request.user.employee.opportunity_set.filter(success=True)
+
+    context = {'data': data}
     return render(request, 'accounts/success_leads.html', context)
 
 
@@ -496,6 +513,7 @@ def get_opportunity(request, leads):
 def get_employee_opportunities(request):
     opportunities = []
     leads = request.user.employee.lead_set.all()
+
     for lead in leads:
         if hasattr(lead, 'opportunity'):
             opportunities.append(lead.opportunity)
@@ -504,11 +522,11 @@ def get_employee_opportunities(request):
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin', 'employee'])
 def opportunities(request):
-    opportunities = []
     if request.user.is_staff:
-        opportunities = Opportunity.objects.all()
+        opportunities = Opportunity.objects.filter(success=False, delete=False)
     else: 
-        opportunities = get_employee_opportunities(request)
+        opportunities = request.user.employee.opportunity_set.filter(success=False, delete=False)
+
     return render(request, 'accounts/opportunities.html', {'opportunities': opportunities})
 
 @login_required(login_url='login')
@@ -545,12 +563,16 @@ def update_opportunity(request, id):
 
 
 @login_required(login_url='login')
-@allowed_users(allowed_roles=['employee'])
+@allowed_users(allowed_roles=['employee', 'admin'])
 def delete_opportunity(request, id):
     opportunity = Opportunity.objects.get(id=id)
 
     if request.method == 'POST':
-        opportunity.delete()
+        if opportunity.delete:
+            opportunity.delete()
+        else:
+            opportunity.delete = True
+            opportunity.save()
         return redirect('http://localhost:8000/opportunities/')
         
     context = {'data': opportunity, 'delete': f'delete_opportunity', 'reverse': opportunity._meta.verbose_name_plural}
@@ -784,8 +806,8 @@ def send_email(request, id):
 @allowed_users(allowed_roles=['employee'])
 def user_page(request):
     orders = request.user.employee.order_set.all()
-    leads = request.user.employee.lead_set.all()
-    opportunities = get_employee_opportunities(request)
+    leads = request.user.employee.lead_set.filter(success=False, delete=False)
+    opportunities = request.user.employee.opportunity_set.all()
     customers = get_employee_customers(request)
     print(leads.count())
     total_orders = orders.count()
