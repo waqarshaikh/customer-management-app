@@ -52,8 +52,8 @@ def home(request):
     employee_data = []
     
     for emp in employees:
-        _leads = emp.employee.lead_set.all()
-        _opportunities = get_opportunity(request, _leads)
+        _leads = emp.employee.lead_set.filter(success=False, delete=False)
+        _opportunities = emp.employee.opportunity_set.filter(success=False, delete=False)
         _customers = get_customers(request, _opportunities)
     
         employee = [

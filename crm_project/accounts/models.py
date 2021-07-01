@@ -71,8 +71,6 @@ class Lead(models.Model):
         ('Closed', 'Closed'),
         ('Others', 'Others'),
     )
-    # contact = models.ForeignKey(Contact, null=True, on_delete=models.CASCADE)
-    # company = models.ForeignKey(Company, null=True, on_delete=models.CASCADE)
     source = models.CharField(max_length=20, null=True,  choices=SOURCES)
     employee = models.ForeignKey(Employee, null=True, on_delete=models.CASCADE, verbose_name='Assigned To')
     status = models.CharField(max_length=200, null=True, choices=STATUS)
