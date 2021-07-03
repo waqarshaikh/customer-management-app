@@ -1,71 +1,54 @@
 {% extends 'accounts/base.html' %}
 
 {% block content %}
-<div class="container">
-    <div style="margin-bottom: 15px;" class="buttons">
-        <a href="{% url 'calls' lead.id %}"  style="height:40px; display: inline-flex; align-items: center; gap: 5px;" class="btn btn-primary btn-sm"><ion-icon name="call-outline" style="font-size: 25px;"></ion-icon>Calls</a>
-        <a href="{% url 'contacts' lead.id %}"  style="height:40px; display: inline-flex; align-items: center; gap: 5px;" class="btn btn-info btn-sm"><ion-icon name="people-outline" style="font-size: 25px;"></ion-icon>Contacts</a>
-    </div>
-    
+<style>
+    .profile-pic{
+		max-width: 200px;
+		max-height:200px;
+		margin: 0 auto;
+		border-radius: 50%;
+	}
+</style>
+<div class="container">  
     <div class="row">
-        <div class="col-md">
-            <div class="card card-body">
+        <div class="col-md-2">
+            <div class="row">
+                <img class="profile-pic" src="{{ lead.company.profile_pic.url }}">
+            </div>
+            <div class="row">
+                <div style="margin-bottom: 15px; display: flex; flex-direction: column; gap: 10px;" class="buttons">
+                    <a href="{% url 'calls' lead.id %}"  style="height:40px; display: inline-flex; align-items: center; gap: 5px;" class="btn btn-primary btn-sm"><ion-icon name="call-outline" style="font-size: 25px;"></ion-icon>Calls</a>
+                    <a href="{% url 'contacts' lead.id %}"  style="height:40px; display: inline-flex; align-items: center; gap: 5px;" class="btn btn-info btn-sm"><ion-icon name="people-outline" style="font-size: 25px;"></ion-icon>Contacts</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-5">
+            <div class="card card-body" style="">
                 <h5>Lead Information
-                    <a href="{% url 'convert_lead' lead.id %}" style="margin-left: 10px" class="btn btn-outline-success btn-sm">Convert to Opportunity</a>
+                    <a href="{% url 'convert_lead' lead.id %}" style="margin-left: 10px" class="btn btn-outline-success btn-sm convert">Convert to <span>Opportunity</span></a>
+                    <a href="{% url 'update_lead' lead.id %}" class="btn btn-primary btn-sm">Update</a>
                 </h5>
                 <hr>
-                <p>Name: {{ contact.name }}</p>
-                <p>Phone: {{ contact.phone }}</p>
-                <p>Email: {{ contact.email }}</p>
-                <p>Address: {{ contact.phone }}</p>
+                <p>Name: {{ lead.company }}</p>
+                <p>Phone: {{ lead.company.company_phone }}</p>
+                <p>Email: {{ lead.company.company_email }}</p>
+                <p>Address: {{ lead.company.address }}</p>
                 <p>Status: {{ lead.status }}</p>
                 <p>Status: {{ lead.source }}</p>
             </div>
         </div>
     </div>
 </div>
-    {% comment %} <div class="col-md">
-        <div class="card card-body">
-            <h5>Total orders</h5>
-            <hr>
-            <h1 style="text-align: center; padding: 10px;">{{ order_count }}</h1>
-        </div>
-    </div>
-</div>
-<br>
-<div class="row">
-    <div class="col">
-        <div class="card card-body">
-            <form action="" method="GET">
-                {{ my_filter.form }}
-                <button class="btn btn-primary" type="submit">Search</button>
-            </form>
-        </div>
-    </div>
-</div>
-<br>
-<div class="row">
-    <div class="col-md">
-        <div class="card card-body">
-            <table class="table table-sm">
-                <tr>
-                    <th>Product</th>
-                    <th>Date ordered</th>
-                    <th>Status</th>
-                    <th>Update</th>
-                    <th>Remove</th>
-                </tr>
-                {% for order in orders %}
-                <tr>
-                    <td> {{ order.product }}</td>
-                    <td> {{ order.date_created }} </td>
-                    <td> {{ order.status }} </td>
-                    <td> <a href="{% url 'delete_order' order.id %}" class="btn btn-danger btn-sm">Remove</a> </td>
-                    <td> <a href="{% url 'update_order' order.id %}" class="btn btn-primary btn-sm">Update</a> </td>
-                </tr>
-                {% endfor %}
-            </table>
-        </div>
-    </div> 
-</div>{% endcomment %}
+<script>
+    $(document).ready(function(){
+        if("{{lead.status}}" == "Lead"){
+            break;
+        } else if("{{lead.status}}" == "Opportunity"){
+            $("span").replaceWith("Customer");
+            $(".buttons").append(`<a href="{% url 'contacts' lead.id %}"  style="height:40px; display: inline-flex; align-items: center; gap: 5px;" class="btn btn-info btn-sm"><ion-icon name="people-outline" style="font-size: 25px;"></ion-icon>Appointments</a>`);
+        } else {
+            $(".convert").remove();
+        }
+    });   
+</script>
 {% endblock content %}

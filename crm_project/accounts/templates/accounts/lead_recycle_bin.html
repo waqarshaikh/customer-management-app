@@ -18,30 +18,16 @@
                         <th>Status</th>
                         <th>Remove</th>
                     </tr>
-                    {% if name == 'opportunity' %}
-                    {% for opportunity in data %}
-                        <tr>
-                            <td>{{ opportunity.lead.company.company_name }}</td>
-                            <td>{{ opportunity.lead.employee }}</td>
-                            <td>{{ opportunity.lead.source }}</td>
-                            <td>{{ opportunity.lead.status }}</td>
-                            <td><a href="restore_lead/{{opportunity.id}}/opportunities/" class="btn btn-success btn-sm">Restore</a></td>
-                            <td><a href="/delete_lead/{{lead.id}}" class="btn btn-danger btn-sm">Delete</a></td>
-                        </tr>
-                    {% endfor %}
-                    {% else %}
                     {% for lead in data %}
                         <tr>
                             <td>{{ lead.company.company_name }}</td>
                             <td>{{ lead.employee }}</td>
                             <td>{{ lead.source }}</td>
                             <td>{{ lead.status }}</td>
-                            <td><a href="restore_lead/{{lead.id}}/leads/" class="btn btn-success btn-sm">Restore</a></td>
+                            <td><a href="restore_lead/{{lead.id}}/{{name}}/" class="btn btn-success btn-sm">Restore</a></td>
                             <td><a href="/delete_lead/{{lead.id}}" class="btn btn-danger btn-sm">Delete</a></td>
                         </tr>
                     {% endfor %}
-                    {% endif %}
-                    
                 </table>
             </div>
         </div>

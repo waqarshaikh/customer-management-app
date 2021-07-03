@@ -22,7 +22,6 @@
                         </h4>
                     </div>
                 </div>
-                <h5>Opportunity</h5>
             </div>
             <div class="card card-body">
                 <table class="table">
@@ -37,12 +36,12 @@
                     </tr>
                     {% for opportunity in opportunities %}
                         <tr>
-                            <td>{{ opportunity.lead }}</td>
-                            <td>{{ opportunity.lead.source }}</td>
-                            <td>{{ opportunity.lead.employee }}</td>
-                            <td>{{ opportunity.lead.status }}</td>
-                            <td><a href="{% url 'convert_opportunity' opportunity.id %}" class="btn btn-primary btn-sm">To Customer</a></td>
-                            <td><a href="{% url 'update_opportunity' opportunity.id %}" class="btn btn-primary btn-sm">Update</a></td>
+                            <td>{{ opportunity.company }}</td>
+                            <td>{{ opportunity.source }}</td>
+                            <td>{{ opportunity.employee }}</td>
+                            <td>{{ opportunity.status }}</td>
+                            <td><a href="{% url 'lead_detail' opportunity.id %}" class="btn btn-info btn-sm">View</a></td>
+                            <td><a href="{% url 'update_lead' opportunity.id %}" class="btn btn-primary btn-sm">Update</a></td>
                             <td><a href="{% url 'delete_opportunity' opportunity.id %}" class="btn btn-danger btn-sm">Delete</a></td>
                         </tr>
                     {% endfor %}

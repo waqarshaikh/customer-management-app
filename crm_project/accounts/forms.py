@@ -27,7 +27,7 @@ class LeadForm(ModelForm):
     class Meta:
         model = Lead
         fields = '__all__'
-        exclude = ['contact', 'company', 'call']
+        exclude = ['contact', 'company', 'call', 'status']
 
     # def __init__(self, *args, **kwargs):
     #     self.fields["comment"].widget = forms.Textarea(attrs={"rows":4,"cols":20})

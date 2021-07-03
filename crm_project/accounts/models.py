@@ -62,20 +62,14 @@ class Lead(models.Model):
     )
 
     STATUS = (
-        ('New', 'New'),
-        ('Working', 'Working'),
-        ('Contacted', 'Contacted'),
-        ('Proposal Sent', 'Proposal Sent'),
-        ('Qualified', 'Qualified'),
-        ('Customer (converted lead)', 'Customer (converted lead)'),
-        ('Closed', 'Closed'),
-        ('Others', 'Others'),
+        ('Lead', 'Lead'),
+        ('Opportunity', 'Opportunity'),
+        ('Customer', 'Customer'),
     )
     source = models.CharField(max_length=20, null=True,  choices=SOURCES)
     employee = models.ForeignKey(Employee, null=True, on_delete=models.CASCADE, verbose_name='Assigned To')
     status = models.CharField(max_length=200, null=True, choices=STATUS)
     comment = models.TextField(max_length=100, null=True, blank=True)
-    success = models.BooleanField(default=False)
     delete = models.BooleanField(default=False)
     
     class Meta:
@@ -88,9 +82,7 @@ class Lead(models.Model):
         return self.company.company_name
 
 class Opportunity(models.Model):
-    lead = models.OneToOneField(Lead, null=True, blank=True, on_delete=models.CASCADE)
     employee = models.ForeignKey(Employee, null=True, on_delete=models.CASCADE, verbose_name='Assigned To')
-    success = models.BooleanField(default=False)
     delete = models.BooleanField(default=False)
 
     class Meta:
@@ -98,9 +90,6 @@ class Opportunity(models.Model):
     
     def class_name(self):
         return self._meta.model_name
-
-    def __str__(self):
-        return str(self.lead)
 
 class Company(models.Model):
     company_name = models.CharField(max_length=255, null=True)
@@ -127,7 +116,6 @@ class Contact(models.Model):
     designation = models.CharField(max_length=255, null=True)
     date_created = models.DateTimeField(auto_now_add=True, null=True)
     lead = models.ForeignKey(Lead, null=True, on_delete=models.SET_NULL)
-    opportunity = models.ForeignKey(Opportunity, null=True, on_delete=models.SET_NULL)
 
     class Meta:
         verbose_name_plural = 'contacts'
