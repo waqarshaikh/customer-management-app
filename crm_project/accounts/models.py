@@ -183,3 +183,27 @@ class Call(models.Model):
 
     def __str__(self):
         return f"{self.call_type} on {self.date}"
+
+class Meeting(models.Model):
+    REMINDER = (
+        ("None", "None"),
+        ("At the time of meeting", "At the time of meeting"),
+        ("5 minutes before", "5 minutes before"),
+        ("15 minutes before", "15 minutes before"),
+        ("30 minutes before", "30 minutes before"),
+        ("1 hour before", "1 hour before"),
+        ("1 day before", "1 day before"),
+    )
+    title = models.CharField(max_length=255, null=True)
+    location = models.CharField(max_length=255, null=True)
+    from_time = models.DateTimeField(null=True)
+    to_time = models.DateTimeField(null=True)
+    host = models.ForeignKey
+    contact = models.ForeignKey(Contact, null=True, on_delete=models.CASCADE)
+    host = models.ForeignKey(Employee, null=True, on_delete=models.CASCADE)
+    description = models.TextField(max_length=255, null=True,  blank=True)
+    reminder = models.CharField(max_length=255, null=True, choices=REMINDER, default="15 minutes before")
+
+    def __str__(self):
+        return self.title
+    
