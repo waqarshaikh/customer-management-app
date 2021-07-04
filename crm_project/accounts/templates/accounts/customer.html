@@ -39,14 +39,18 @@
         </div>
     </div>
 </div>
-<script>
+<script >
     $(document).ready(function(){
         if("{{lead.status}}" == "Lead"){
-            break;
-        } else if("{{lead.status}}" == "Opportunity"){
+           
+        }
+        if("{{lead.status}}" == "Opportunity"){
             $("span").replaceWith("Customer");
-            $(".buttons").append(`<a href="{% url 'contacts' lead.id %}"  style="height:40px; display: inline-flex; align-items: center; gap: 5px;" class="btn btn-info btn-sm"><ion-icon name="people-outline" style="font-size: 25px;"></ion-icon>Appointments</a>`);
-        } else {
+        }
+        if("{{lead.status}}" == "Opportunity" || "{{lead.status}}" == "Customer"){
+            $(".buttons").append(`<a href="{% url 'meetings' lead.id %}"  style="height:40px; display: inline-flex; align-items: center; gap: 5px;" class="btn btn-warning btn-sm"><ion-icon name="calendar-outline" style="font-size: 25px;"></ion-icon>Meeting</a>`);
+        } 
+        if("{{lead.status}}" == "Customer") {
             $(".convert").remove();
         }
     });   

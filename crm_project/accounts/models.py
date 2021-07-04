@@ -196,13 +196,20 @@ class Meeting(models.Model):
     )
     title = models.CharField(max_length=255, null=True)
     location = models.CharField(max_length=255, null=True)
-    from_time = models.DateTimeField(null=True)
-    to_time = models.DateTimeField(null=True)
-    host = models.ForeignKey
+    date = models.DateField(null=True)
+    from_time = models.TimeField(null=True)
+    to_time = models.TimeField(null=True)
+    lead = models.ForeignKey(Lead, null=True, on_delete=models.CASCADE)
     contact = models.ForeignKey(Contact, null=True, on_delete=models.CASCADE)
     host = models.ForeignKey(Employee, null=True, on_delete=models.CASCADE)
     description = models.TextField(max_length=255, null=True,  blank=True)
     reminder = models.CharField(max_length=255, null=True, choices=REMINDER, default="15 minutes before")
+
+    class Meta:
+        verbose_name_plural = 'meetings'
+    
+    def class_name(self):
+        return self._meta.model_name
 
     def __str__(self):
         return self.title

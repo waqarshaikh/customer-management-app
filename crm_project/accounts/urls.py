@@ -46,6 +46,11 @@ urlpatterns = [
     path('lead_detail/<id>/calls/delete/<call_id>/', views.delete_call, name='delete-call'),
     path('lead_detail/<id>/calls/add/', views.create_call, name='create_call'),
 
+    path('lead_detail/<id>/meetings/', views.meetings, name='meetings'),
+    path('lead_detail/<id>/meetings/update/<meeting_id>/', views.update_meeting, name='update-meeting'),
+    path('lead_detail/<id>/meetings/delete/<meeting_id>/', views.delete_meeting, name='delete-meeting'),
+    path('lead_detail/<id>/meetings/add/', views.create_meeting, name='create_meeting'),
+
     path('lead_detail/<id>/contacts/', views.contacts, name='contacts'),
     path('lead_detail/<id>/contacts/update/<contact_id>/', views.update_contact, name='update-contact'),
     path('lead_detail/<id>/contacts/delete/<contact_id>/', views.delete_contact, name='delete-contact'),

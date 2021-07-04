@@ -1,0 +1,41 @@
+{% extends 'accounts/base.html' %}
+
+{% block content %}
+    {% for message in messages %}
+        <p id='messages'><i class="fas fa-check-circle" style="font-size:24px;color:green"></i> {{ message }}</p>
+    {% endfor %}
+    <a class="btn btn-primary mb-3" href="{% url 'create_meeting' lead.id %}">Add Meeting</a> 
+    <div class="row">
+        <div class="col-md">
+            <div class="card card-body">
+                <h5>Meetings</h5>
+            </div>
+            <div class="card card-body">
+                <table class="table">
+                    <tr>
+                        <th>Type</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Location</th>
+                        <th>Contact</th>
+                        <th>Description</th>
+                        <th>Update</th>
+                        <th>Remove</th>
+                    </tr>
+                    {% for meeting in meetings %}
+                        <tr>
+                            <td>{{ meeting.title }}</td>
+                            <td>{{ meeting.date }}</td>
+                            <td>{{ meeting.from_time }} to {{ meeting.to_time }}</td>
+                            <td>{{ meeting.location }}</td>
+                            <td>{{ meeting.contact }}</td>
+                            <td>{{ meeting.description }}</td>
+                            <td><a href="/lead_detail/{{lead.id}}/meetings/update/{{meeting.id}}/" class="btn btn-primary btn-sm">Update</a></td>
+                            <td><a href="/lead_detail/{{lead.id}}/meetings/delete/{{meeting.id}}/" class="btn btn-danger btn-sm">Delete</a></td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

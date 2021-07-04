@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.forms.widgets import CheckboxSelectMultiple
 
-from .models import Call, Company, Contact, Customer, Email, Employee, Lead, Opportunity, Order, Product, Tag
+from .models import Call, Company, Contact, Customer, Email, Employee, Lead, Meeting, Opportunity, Order, Product, Tag
 
 class EmployeeForm(ModelForm):
     class Meta:
@@ -56,6 +56,12 @@ class CompanyForm(ModelForm):
 class CallForm(ModelForm):
     class Meta:
         model = Call
+        fields = '__all__'
+        exclude = ['lead']
+
+class MeetingForm(ModelForm):
+    class Meta:
+        model = Meeting
         fields = '__all__'
         exclude = ['lead']
 
