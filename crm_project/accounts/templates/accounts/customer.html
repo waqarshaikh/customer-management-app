@@ -2,57 +2,84 @@
 
 {% block content %}
 <style>
-    .profile-pic{
-		max-width: 200px;
-		max-height:200px;
-		margin: 0 auto;
-		border-radius: 50%;
-	}
+    .profile-pic {
+        max-width: 200px;
+        max-height: 200px;
+        margin: 0 auto;
+        border-radius: 50%;
+    }
 </style>
-<div class="container">  
+<div class="container">
     <div class="row">
+        <div class="card text-white bg-dark mb-3" style="max-width: 100rem;">
+            <div class="card-body"
+                style="text-align: center; padding-bottom: 10px; display: flex; align-items: center; justify-items: center;">
+                <h4 style="margin-left: auto;">Lead Information</h4>
+                <div style="margin-left: auto;">
+                    <a href="{% url 'convert_lead' lead.id %}" style="margin-left: 10px"
+                        class="btn btn-success btn-sm convert">Convert to <span>Opportunity</span></a>
+                    <a href="{% url 'update_lead' lead.id %}" class="btn btn-primary btn-sm">Update</a>
+                </div>
+            </div>
+        </div>
+        
         <div class="col-md-2">
             <div class="row">
                 <img class="profile-pic" src="{{ lead.company.profile_pic.url }}">
             </div>
             <div class="row">
                 <div style="margin-bottom: 15px; display: flex; flex-direction: column; gap: 10px;" class="buttons">
-                    <a href="{% url 'calls' lead.id %}"  style="height:40px; display: inline-flex; align-items: center; gap: 5px;" class="btn btn-primary btn-sm"><ion-icon name="call-outline" style="font-size: 25px;"></ion-icon>Calls</a>
-                    <a href="{% url 'contacts' lead.id %}"  style="height:40px; display: inline-flex; align-items: center; gap: 5px;" class="btn btn-info btn-sm"><ion-icon name="people-outline" style="font-size: 25px;"></ion-icon>Contacts</a>
+                    <a href="{% url 'calls' lead.id %}"
+                        style="height:40px; display: inline-flex; align-items: center; gap: 5px;"
+                        class="btn btn-primary btn-sm">
+                        <ion-icon name="call-outline" style="font-size: 25px;"></ion-icon>Calls
+                    </a>
+                    <a href="{% url 'contacts' lead.id %}"
+                        style="height:40px; display: inline-flex; align-items: center; gap: 5px;"
+                        class="btn btn-info btn-sm">
+                        <ion-icon name="people-outline" style="font-size: 25px;"></ion-icon>Contacts
+                    </a>
                 </div>
             </div>
         </div>
         <div class="col-md-5">
-            <div class="card card-body" style="">
-                <h5>Lead Information
-                    <a href="{% url 'convert_lead' lead.id %}" style="margin-left: 10px" class="btn btn-outline-success btn-sm convert">Convert to <span>Opportunity</span></a>
-                    <a href="{% url 'update_lead' lead.id %}" class="btn btn-primary btn-sm">Update</a>
+            <div class="card card-body" >
+                <h5>Company Information
                 </h5>
                 <hr>
                 <p>Name: {{ lead.company }}</p>
                 <p>Phone: {{ lead.company.company_phone }}</p>
                 <p>Email: {{ lead.company.company_email }}</p>
                 <p>Address: {{ lead.company.address }}</p>
-                <p>Status: {{ lead.status }}</p>
-                <p>Status: {{ lead.source }}</p>
+                <p>Website: {{ lead.company.website }}</p>
+            </div>
+        </div>
+        <div class="col-md-5">
+            <div class="card card-body" >
+                <h5>Lead Information
+                </h5>
+                <hr>
+                <p>Lead Source: {{ lead.source }}</p>
+                <p>Assigned to: {{ lead.employee }}</p>
+                <p>Comment: {{ lead.comment }}</p>
             </div>
         </div>
     </div>
 </div>
-<script >
-    $(document).ready(function(){
-        if("{{lead.status}}" == "Lead"){
-           
+<script>
+    $(document).ready(function () {
+        if ("{{lead.status}}" == "Lead") {
+
         }
-        if("{{lead.status}}" == "Opportunity"){
+        if ("{{lead.status}}" == "Opportunity") {
             $("span").replaceWith("Customer");
         }
-        if("{{lead.status}}" == "Opportunity" || "{{lead.status}}" == "Customer"){
+        if ("{{lead.status}}" == "Opportunity" || "{{lead.status}}" == "Customer") {
             $(".buttons").append(`<a href="{% url 'meetings' lead.id %}"  style="height:40px; display: inline-flex; align-items: center; gap: 5px;" class="btn btn-warning btn-sm"><ion-icon name="calendar-outline" style="font-size: 25px;"></ion-icon>Meeting</a>`);
-        } 
-        if("{{lead.status}}" == "Customer") {
-            $(".convert").remove();
         }
-    });   
+        if ("{{lead.status}}" == "Customer") {
+            $(".convert").replaceWith(`<a href="{% url 'send-email' lead.id %}"  style="height:32px; display: inline-flex; align-items: center; gap: 5px;" class="btn btn-warning btn-sm"><ion-icon name="mail-outline" style="font-size: 25px;"></ion-icon>Send Email</a>`);
+        }
+    });
 </script>
 {% endblock content %}

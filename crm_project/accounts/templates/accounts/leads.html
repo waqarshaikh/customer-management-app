@@ -28,7 +28,7 @@
                     <div class="card-body" style="text-align: center; padding-bottom: 0px;">
                         <h4>LEADS
                             <div style="float: right;">
-                                <a class="btn btn-warning mb-3" href="{% url 'create_lead' %}">Add Lead</a>
+                                <a class="btn btn-warning mb-3" style="height:40px; display: inline-flex; align-items: center; gap: 5px;" href="{% url 'create_lead' %}"><ion-icon name="add-outline" style="font-size: 23px;"></ion-icon>Add Lead</a>
                                 {% comment %} <a class="btn btn-primary" href="{% url 'import-buyer' %}">ADD BULK BUYER</a> {% endcomment %}
                             </div>
                         </h4>
@@ -40,7 +40,7 @@
                             data-ajax="api/leads/?format=datatables">
                             <thead>
                                 <tr>
-                                    <th>Sr No</th>
+                                
                                     <th>Lead Name</th>
                                     <th>Assigned To</th>
                                     <th>Source</th>
@@ -94,7 +94,7 @@
                 }
             ],
             columns: [
-                { data: 'id' },
+
                 { data: 'company', name: 'company.company_name' },
                 { data: 'employee', name: 'employee.name' },
                 { data: 'source' },
@@ -113,7 +113,9 @@
 
         $(".dt-button").addClass("btn btn-primary");
         $('.buttons-excel').css({"margin-right": "5px"});
-        
+        console.log("hello");
+
+
     });
     
 </script>

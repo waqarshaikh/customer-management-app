@@ -74,52 +74,52 @@ def home(request):
 
     return render(request, 'accounts/dashboard.html', context)
 
-# class ParseExcel(APIView):
-#     def post(self, request, format=None):
-#         import_url = 'http://localhost:8000/import/'
-#         try:
-#             excel_file = request.FILES['files']
-#         except MultiValueDictKeyError:
-#             messages.error(request, 'File not found!')
-#             return redirect(import_url)
+class ParseExcel(APIView):
+    def post(self, request, format=None):
+        import_url = 'http://localhost:8000/import/'
+        try:
+            excel_file = request.FILES['files']
+        except MultiValueDictKeyError:
+            messages.error(request, 'File not found!')
+            return redirect(import_url)
         
-#         file_extension = str(excel_file).split('.')[-1]
+        file_extension = str(excel_file).split('.')[-1]
         
-#         if file_extension == 'xls':
-#             data = get_xls_data(excel_file, column_limit=9)
-#         elif file_extension == 'xlsx':
-#             data = get_xlsx_data(excel_file, column_limit=9)
-#         else:
-#             messages.error(request, 'Invalid File, Upload Excel file only!')
-#             return redirect(import_url)
+        if file_extension == 'xls':
+            data = get_xls_data(excel_file, column_limit=5)
+        elif file_extension == 'xlsx':
+            data = get_xlsx_data(excel_file, column_limit=5)
+        else:
+            messages.error(request, 'Invalid File, Upload Excel file only!')
+            return redirect(import_url)
 
-#         sellers = data['Sheet1']
-#         seller_count = 0
+        leads = data['Sheet1']
+        lead_count = 0
 
-#         if len(sellers) > 1:
-#             for seller in sellers:
-#                 if len(seller) > 0:
-#                     if seller[0] != 'CompanyName':
-#                         if len(seller) < 9:
-#                             i = len(seller)
-#                             while i < 8:
-#                                 seller.append('')
-#                                 i += 1
-#                         if seller:
-#                             seller_count += 1
-#                             Seller.objects.create(
-#                                 company_name=seller[0], 
-#                                 gstin=seller[1],
-#                                 address=seller[2],
-#                                 city=seller[3],
-#                                 state=seller[4],
-#                                 pin_code=seller[5],
-#                                 mobile=seller[6],
-#                                 email=seller[7],
-#                                 pan_card=seller[8]
-#                             )
-#         messages.success(request, f'Succesfully added {seller_count} Sellers')
-#         return redirect(import_url)
+        if len(leads) > 1:
+            for lead in leads:
+                if len(lead) > 0:
+                    if lead[0] != 'CompanyName':
+                        if len(lead) < 9:
+                            i = len(lead)
+                            while i < 8:
+                                lead.append('')
+                                i += 1
+                        if lead:
+                            lead_count += 1
+                            Lead.objects.create(
+                                company_name=lead[0], 
+                                gstin=lead[1],
+                                address=lead[2],
+                                city=lead[3],
+                                state=lead[4],
+                                pin_code=lead[5],
+                                mobile=lead[6],
+                                email=lead[7],
+                                pan_card=lead[8]
+                            )
+        messages.success(request, f'Succesfully added {lead_count} Leads')
+        return redirect(import_url)
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
@@ -597,7 +597,7 @@ def convert_opportunity(request, id):
 def calls(request, id):
     lead = Lead.objects.get(id=id)
     calls = lead.call_set.all()
-
+    
     context = {'calls': calls, 'lead':lead}
     return render(request, 'accounts/calls.html', context)
 
@@ -819,29 +819,31 @@ def logout_user(request):
     return redirect('login')
 
 @login_required(login_url='login')
-@allowed_users(allowed_roles=['employee'])
+@allowed_users(allowed_roles=['employee', 'admin'])
 def send_email(request, id):
     form = EmailForm()
-    customer = Customer.objects.get(id=id)
-
+    lead = Lead.objects.get(id=id)
+    
     if request.method == 'POST':
         form = EmailForm(request.POST, request.FILES)
+    
         if form.is_valid():
-            form.save()
-            
+            email = form.save()
+
             message = request.POST.get('message')
             subject = request.POST.get('subject')
-            image = request.FILES['img']
+            image = email.img
             from_email = settings.EMAIL_HOST_USER
-            to_email = "shaikhwaqar1999@gmail.com"
+            to_email =  lead.company.company_email
 
             print("Image: ",image)
+            print("Email: ",lead.company.company_email)
             
             img_data =  open(f'D:\Web\Django\customer-management-app\crm_project\static\images\{image}', 'rb').read()
 
             html_part = MIMEMultipart(_subtype='related')
            
-            body = MIMEText('<h3>Image: </h3><br><img src="cid:myimage" />', _subtype='html')
+            body = MIMEText('<br><img src="cid:myimage" />', _subtype='html')
             html_part.attach(body)
 
             img = MIMEImage(img_data, 'png')
@@ -854,9 +856,8 @@ def send_email(request, id):
             print(f"Message: {message}\n Subject: {subject}\n From: {from_email}\n To: {to_email}\nImage: {img}")
             msg.send()
             
-            messages.success(request, f'Email sucesfully send to {customer}')
         print(form.errors)
-        return HttpResponse('Email sent')
+        return HttpResponse('<h1>Email sent </h1>')
     
     context = {'form': form}
 

@@ -97,7 +97,7 @@ class Company(models.Model):
     company_email = models.EmailField(max_length=255, null=True)
     address = models.TextField(max_length=255, null=True)
     website = models.URLField(max_length=255)
-    profile_pic = models.ImageField(null=True, blank=True, default='default-profile-pic.jpg', verbose_name="Logo/Photo")
+    profile_pic = models.ImageField(null=True, blank=True, default='default-company-pic.png', verbose_name="Logo/Photo")
     lead = models.OneToOneField(Lead, on_delete=models.CASCADE, primary_key=True)
     
     class Meta:
@@ -145,7 +145,7 @@ class Customer(models.Model):
 
 class Email(models.Model):
     subject = models.CharField(max_length=255, null=True)
-    img = models.ImageField(null=True, blank=True, default='default-profile-pic.jpg')
+    img = models.ImageField(null=True, blank=True, default='LOGO.png')
     message = models.TextField(max_length=255, null=True) 
 
     def __str__(self):
