@@ -1,15 +1,8 @@
 # customer-management-app
-A basic CRM application build using Django.
+CRM Website using Django and jQuery for Admins and Employees to manage their Leads, Opportunities, and Customers as well as keep track of calls, meetings, and contacts.
 
 ### Install dependencies
 
 ```
 pip install -r requirements.txt
 ```
-
-### To Do
-
-1. DESIGN
-2. SMS
-
-
