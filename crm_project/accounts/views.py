@@ -2,7 +2,6 @@ from django.db.models import Q
 from .serializers import LeadSerializer
 from typing import DefaultDict
 from customer_feedback.models import CustomerFeedback, IntrestedCustomer, CustomerComplaint
-from django.conf.urls import url
 from django.shortcuts import redirect, render
 from django.http import HttpResponse
 from django.forms import inlineformset_factory
