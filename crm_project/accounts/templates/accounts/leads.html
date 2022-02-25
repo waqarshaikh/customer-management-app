@@ -28,7 +28,9 @@
                     <div class="card-body" style="text-align: center; padding-bottom: 0px;">
                         <h4>LEADS
                             <div style="float: right;">
+                                {% if request.user.is_staff %}
                                 <a class="btn btn-warning mb-3" style="height:40px; display: inline-flex; align-items: center; gap: 5px;" href="{% url 'create_lead' %}"><ion-icon name="add-outline" style="font-size: 23px;"></ion-icon>Add Lead</a>
+                                {% endif %}
                                 {% comment %} <a class="btn btn-primary" href="{% url 'import-buyer' %}">ADD BULK BUYER</a> {% endcomment %}
                             </div>
                         </h4>
