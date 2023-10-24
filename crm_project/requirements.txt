@@ -11,7 +11,7 @@ et-xmlfile==1.1.0
 lml==0.1.0
 openpyxl==3.1.2
 Pillow==10.1.0
-psycopg2==2.9.9
+psycopg2-binary==2.9.9
 pyexcel-io==0.6.6
 pyexcel-xls==0.7.0
 pyexcel-xlsx==0.6.0
