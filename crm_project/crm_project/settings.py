@@ -26,7 +26,7 @@ SECRET_KEY = 'a@-iae=j6ggzi=^dio6&05)efydk)aghupd8xfklgg=-$si2cl'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['.vercel.app', '.now.sh', '127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['simple-crm-kappa.vercel.app', '.now.sh', '127.0.0.1', 'localhost']
 
 
 # Application definition
