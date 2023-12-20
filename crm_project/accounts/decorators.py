@@ -1,5 +1,6 @@
 from django.http import HttpResponse
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
+
 
 def unauthenticated_user(view_function):
     def wrapper_function(request, *args, **kwargs):
@@ -34,7 +35,7 @@ def admin_only(view_function):
             group = request.user.groups.all()[0].name
         
         if group == None:
-            return HttpResponse("<h1>Restircted Access</h1><br>Once the Admin assigns you as Employee you will be able to view this page.<a href='logout/'>Log Out</a>")
+            return render(request, 'accounts/restricted_access.html')
 
         if group == 'employee':
             return redirect('user-page')
